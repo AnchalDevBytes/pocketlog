@@ -1,30 +1,36 @@
-"use client"
+"use client";
 
-import { signIn, getSession } from "next-auth/react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { motion } from "framer-motion"
-import { Wallet, Chrome } from "lucide-react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { useEffect } from "react"
+import { signIn, getSession } from "next-auth/react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { motion } from "framer-motion";
+import { Wallet, Chrome } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function SignInPage() {
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
     const checkSession = async () => {
-      const session = await getSession()
+      const session = await getSession();
       if (session) {
-        router.push("/dashboard")
+        router.push("/dashboard");
       }
-    }
-    checkSession()
-  }, [router])
+    };
+    checkSession();
+  }, [router]);
 
   const handleGoogleSignIn = () => {
-    signIn("google", { callbackUrl: "/dashboard" })
-  }
+    signIn("google", { callbackUrl: "/dashboard" });
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-900 flex items-center justify-center p-4">
@@ -37,9 +43,13 @@ export default function SignInPage() {
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center space-x-2 mb-4">
             <Wallet className="h-8 w-8 text-blue-600" />
-            <span className="text-2xl font-bold text-slate-900 dark:text-white">ExpenseTracker Pro</span>
+            <span className="text-2xl font-bold text-slate-900 dark:text-white">
+              PocketLog
+            </span>
           </Link>
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">Welcome Back</h1>
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
+            Welcome Back
+          </h1>
           <p className="text-slate-600 dark:text-slate-300">
             Sign in to your account to continue tracking your expenses
           </p>
@@ -48,10 +58,16 @@ export default function SignInPage() {
         <Card className="border-0 shadow-2xl">
           <CardHeader className="text-center">
             <CardTitle>Sign In</CardTitle>
-            <CardDescription>Choose your preferred sign-in method</CardDescription>
+            <CardDescription>
+              Choose your preferred sign-in method
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <Button onClick={handleGoogleSignIn} variant="outline" className="w-full h-12 text-base">
+            <Button
+              onClick={handleGoogleSignIn}
+              variant="outline"
+              className="w-full h-12 text-base"
+            >
               <Chrome className="mr-2 h-5 w-5" />
               Continue with Google
             </Button>
@@ -79,5 +95,5 @@ export default function SignInPage() {
         </div>
       </motion.div>
     </div>
-  )
+  );
 }

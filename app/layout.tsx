@@ -1,29 +1,31 @@
-import type React from "react"
-import type { Metadata } from "next"
-import { Inter } from "next/font/google"
-import "./globals.css"
-import { Providers } from "./providers"
+import type React from "react";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
+import { Providers } from "./providers";
 
-const inter = Inter({ subsets: ["latin"] })
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "ExpenseTracker Pro - Smart Financial Management",
+  title: "PocketLog - Smart Financial Management",
   description:
     "Track your expenses, manage budgets, and gain insights into your financial habits with our modern expense tracking application.",
-  keywords: "expense tracker, budget management, financial planning, money management",
-  authors: [{ name: "ExpenseTracker Pro Team" }],
+  keywords:
+    "expense tracker, budget management, financial planning, money management",
+  authors: [{ name: "PocketLog" }],
   openGraph: {
-    title: "ExpenseTracker Pro - Smart Financial Management",
-    description: "Track your expenses, manage budgets, and gain insights into your financial habits.",
+    title: "PocketLog - Smart Financial Management",
+    description:
+      "Track your expenses, manage budgets, and gain insights into your financial habits.",
     type: "website",
   },
-    generator: 'v0.dev'
-}
+  generator: "v0.dev",
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
@@ -31,5 +33,5 @@ export default function RootLayout({
         <Providers>{children}</Providers>
       </body>
     </html>
-  )
+  );
 }

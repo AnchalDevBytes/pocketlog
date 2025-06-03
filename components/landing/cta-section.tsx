@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import { ArrowRight } from "lucide-react"
-import Link from "next/link"
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 export function CTASection() {
   return (
@@ -19,7 +19,8 @@ export function CTASection() {
             Ready to Take Control of Your Finances?
           </h2>
           <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-            Join thousands of users who have already transformed their financial habits with ExpenseTracker Pro.
+            Join thousands of users who have already transformed their financial
+            habits with PocketLog.
           </p>
           <Link href="/dashboard">
             <Button size="lg" variant="secondary" className="text-lg px-8 py-4">
@@ -30,5 +31,5 @@ export function CTASection() {
         </motion.div>
       </div>
     </section>
-  )
+  );
 }

@@ -1,8 +1,9 @@
-# 🚀 ExpenseTracker Pro - Deployment Guide
+# 🚀 PocketLog - Deployment Guide
 
 ## ✅ Pre-Deployment Checklist
 
 ### Environment Variables (All Set! ✅)
+
 - [x] `DATABASE_URL` - Neon PostgreSQL connection
 - [x] `GOOGLE_CLIENT_ID` - Google OAuth client ID
 - [x] `GOOGLE_CLIENT_SECRET` - Google OAuth client secret
@@ -11,6 +12,7 @@
 - [x] `NEXTAUTH_SECRET` - Secure authentication secret
 
 ### Database Setup
+
 1. **Initialize Prisma**:
    \`\`\`bash
    npx prisma generate
@@ -25,24 +27,32 @@
 ## 🌐 Vercel Deployment
 
 ### Automatic Deployment
+
 Your app will automatically deploy when you:
+
 1. Push code to your connected Git repository
 2. Vercel will detect Next.js and configure build settings
 3. Environment variables are already configured
 
 ### Manual Deployment
+
 \`\`\`bash
+
 # Install Vercel CLI
+
 npm i -g vercel
 
 # Deploy
+
 vercel --prod
 \`\`\`
 
 ## 🔧 Post-Deployment Setup
 
 ### 1. Update Google OAuth Settings
+
 After deployment, update your Google Cloud Console:
+
 1. Go to [Google Cloud Console](https://console.cloud.google.com/)
 2. Navigate to APIs & Services > Credentials
 3. Edit your OAuth 2.0 Client ID
@@ -52,11 +62,13 @@ After deployment, update your Google Cloud Console:
    \`\`\`
 
 ### 2. Test Authentication
+
 1. Visit your deployed app
 2. Try signing in with Google
 3. Verify user session persistence
 
 ### 3. Initialize with Sample Data
+
 1. Sign in to your deployed app
 2. Go to Dashboard
 3. Use "Create Sample Data" to populate with demo content
@@ -65,6 +77,7 @@ After deployment, update your Google Cloud Console:
 ## 📊 Features Overview
 
 ### ✅ Implemented Features
+
 - **🔐 Authentication**: Google OAuth with NextAuth.js
 - **📊 Dashboard**: Real-time overview with charts
 - **💰 Transactions**: Full CRUD with filtering and search
@@ -77,6 +90,7 @@ After deployment, update your Google Cloud Console:
 - **🌙 Dark Mode**: Full dark theme support
 
 ### 🔄 Data Flow
+
 1. **Authentication**: Google OAuth → NextAuth.js → Session
 2. **Database**: Prisma ORM → Neon PostgreSQL
 3. **State**: Redux Toolkit → React Components
@@ -86,29 +100,35 @@ After deployment, update your Google Cloud Console:
 ## 🛠️ Development Commands
 
 \`\`\`bash
+
 # Development
-npm run dev          # Start development server
-npm run build        # Build for production
-npm run start        # Start production server
+
+npm run dev # Start development server
+npm run build # Build for production
+npm run start # Start production server
 
 # Database
-npm run db:generate  # Generate Prisma client
-npm run db:push      # Push schema to database
-npm run db:studio    # Open Prisma Studio
+
+npm run db:generate # Generate Prisma client
+npm run db:push # Push schema to database
+npm run db:studio # Open Prisma Studio
 
 # Code Quality
-npm run lint         # Run ESLint
-npm run type-check   # TypeScript type checking
+
+npm run lint # Run ESLint
+npm run type-check # TypeScript type checking
 \`\`\`
 
 ## 🔍 Monitoring & Analytics
 
 ### Performance Monitoring
+
 - Vercel Analytics (automatically enabled)
 - Core Web Vitals tracking
 - Real User Monitoring (RUM)
 
 ### Error Tracking
+
 - Built-in error boundaries
 - API error handling
 - User-friendly error messages
@@ -116,12 +136,14 @@ npm run type-check   # TypeScript type checking
 ## 🔒 Security Features
 
 ### Data Protection
+
 - Bank-level encryption in transit and at rest
 - Secure authentication with OAuth 2.0
 - CSRF protection with NextAuth.js
 - Input validation and sanitization
 
 ### Privacy
+
 - No third-party data sharing
 - User data isolation
 - Secure session management
@@ -145,12 +167,14 @@ npm run type-check   # TypeScript type checking
 ## 📈 Scaling Considerations
 
 ### Database
+
 - Neon PostgreSQL auto-scaling
 - Connection pooling
 - Query optimization
 - Index management
 
 ### Application
+
 - Vercel edge functions
 - CDN distribution
 - Automatic scaling
@@ -169,11 +193,13 @@ npm run type-check   # TypeScript type checking
 ### Common Issues
 
 1. **Authentication Errors**
+
    - Check Google OAuth configuration
    - Verify redirect URIs
    - Ensure NEXTAUTH_SECRET is set
 
 2. **Database Connection**
+
    - Verify DATABASE_URL format
    - Check Neon database status
    - Run `npx prisma db push`
@@ -184,6 +210,7 @@ npm run type-check   # TypeScript type checking
    - Clear `.next` folder and rebuild
 
 ### Support Resources
+
 - [Next.js Documentation](https://nextjs.org/docs)
 - [Prisma Documentation](https://www.prisma.io/docs)
 - [Vercel Documentation](https://vercel.com/docs)
@@ -193,7 +220,7 @@ npm run type-check   # TypeScript type checking
 
 ## 🎉 Congratulations!
 
-Your ExpenseTracker Pro application is now fully deployed and ready for users! 
+Your PocketLog application is now fully deployed and ready for users!
 
 **Live App**: https://your-app-name.vercel.app
 **Admin Panel**: Use the sample data manager to get started quickly

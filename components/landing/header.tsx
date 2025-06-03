@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { motion } from "framer-motion"
-import { Wallet, Menu, X } from "lucide-react"
-import { useState } from "react"
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
+import { Wallet, Menu, X } from "lucide-react";
+import { useState } from "react";
 
 export function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
     <motion.header
@@ -20,7 +20,9 @@ export function Header() {
         <div className="flex justify-between items-center h-16">
           <Link href="/" className="flex items-center space-x-2">
             <Wallet className="h-8 w-8 text-blue-600" />
-            <span className="text-xl font-bold text-slate-900 dark:text-white">ExpenseTracker Pro</span>
+            <span className="text-xl font-bold text-slate-900 dark:text-white">
+              PocketLog
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -48,8 +50,15 @@ export function Header() {
           </nav>
 
           {/* Mobile Menu Button */}
-          <button className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-            {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          <button
+            className="md:hidden"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            {isMenuOpen ? (
+              <X className="h-6 w-6" />
+            ) : (
+              <Menu className="h-6 w-6" />
+            )}
           </button>
         </div>
 
@@ -87,5 +96,5 @@ export function Header() {
         )}
       </div>
     </motion.header>
-  )
+  );
 }

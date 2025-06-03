@@ -1,12 +1,18 @@
-import { Header } from "@/components/landing/header"
-import { Footer } from "@/components/landing/footer"
-import { ParticleBackground } from "@/components/ui/particle-background"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Mail, Github, Twitter, MessageCircle } from "lucide-react"
+import { Header } from "@/components/landing/header";
+import { Footer } from "@/components/landing/footer";
+import { ParticleBackground } from "@/components/ui/particle-background";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Mail, Github, Twitter, MessageCircle } from "lucide-react";
 
 export default function ContactPage() {
   return (
@@ -17,9 +23,12 @@ export default function ContactPage() {
       <main className="pt-24 pb-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 dark:text-white mb-6">Get in Touch</h1>
+            <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 dark:text-white mb-6">
+              Get in Touch
+            </h1>
             <p className="text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto">
-              Have questions, feedback, or need support? We'd love to hear from you.
+              Have questions, feedback, or need support? We'd love to hear from
+              you.
             </p>
           </div>
 
@@ -29,7 +38,8 @@ export default function ContactPage() {
                 <CardHeader>
                   <CardTitle>Send us a Message</CardTitle>
                   <CardDescription>
-                    Fill out the form below and we'll get back to you as soon as possible.
+                    Fill out the form below and we'll get back to you as soon as
+                    possible.
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -45,7 +55,11 @@ export default function ContactPage() {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="email">Email</Label>
-                    <Input id="email" type="email" placeholder="john@example.com" />
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="john@example.com"
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="subject">Subject</Label>
@@ -53,7 +67,11 @@ export default function ContactPage() {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="message">Message</Label>
-                    <Textarea id="message" placeholder="Tell us more about your question or feedback..." rows={5} />
+                    <Textarea
+                      id="message"
+                      placeholder="Tell us more about your question or feedback..."
+                      rows={5}
+                    />
                   </div>
                   <Button className="w-full">
                     <MessageCircle className="mr-2 h-4 w-4" />
@@ -65,7 +83,9 @@ export default function ContactPage() {
 
             <div className="space-y-8">
               <div>
-                <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">Other Ways to Reach Us</h2>
+                <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">
+                  Other Ways to Reach Us
+                </h2>
                 <div className="space-y-6">
                   <Card>
                     <CardContent className="p-6">
@@ -74,8 +94,12 @@ export default function ContactPage() {
                           <Mail className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                         </div>
                         <div>
-                          <h3 className="font-semibold text-slate-900 dark:text-white">Email</h3>
-                          <p className="text-slate-600 dark:text-slate-300">contact@expensetracker.com</p>
+                          <h3 className="font-semibold text-slate-900 dark:text-white">
+                            Email
+                          </h3>
+                          <p className="text-slate-600 dark:text-slate-300">
+                            anchal.js.dev@gmail.com
+                          </p>
                           <p className="text-sm text-slate-500 dark:text-slate-400">
                             We typically respond within 24 hours
                           </p>
@@ -91,8 +115,12 @@ export default function ContactPage() {
                           <Github className="h-6 w-6 text-gray-600 dark:text-gray-400" />
                         </div>
                         <div>
-                          <h3 className="font-semibold text-slate-900 dark:text-white">GitHub</h3>
-                          <p className="text-slate-600 dark:text-slate-300">@expensetracker-pro</p>
+                          <h3 className="font-semibold text-slate-900 dark:text-white">
+                            GitHub
+                          </h3>
+                          <p className="text-slate-600 dark:text-slate-300">
+                            @AnchalDevBytes
+                          </p>
                           <p className="text-sm text-slate-500 dark:text-slate-400">
                             Report bugs or contribute to the project
                           </p>
@@ -108,9 +136,15 @@ export default function ContactPage() {
                           <Twitter className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                         </div>
                         <div>
-                          <h3 className="font-semibold text-slate-900 dark:text-white">Twitter</h3>
-                          <p className="text-slate-600 dark:text-slate-300">@ExpenseTrackerPro</p>
-                          <p className="text-sm text-slate-500 dark:text-slate-400">Follow us for updates and tips</p>
+                          <h3 className="font-semibold text-slate-900 dark:text-white">
+                            Twitter
+                          </h3>
+                          <p className="text-slate-600 dark:text-slate-300">
+                            @AnchalTwt
+                          </p>
+                          <p className="text-sm text-slate-500 dark:text-slate-400">
+                            Follow us for updates and tips
+                          </p>
                         </div>
                       </div>
                     </CardContent>
@@ -120,9 +154,12 @@ export default function ContactPage() {
 
               <Card className="bg-gradient-to-r from-blue-500 to-purple-600 text-white border-0">
                 <CardContent className="p-6">
-                  <h3 className="text-xl font-semibold mb-2">Need Immediate Help?</h3>
+                  <h3 className="text-xl font-semibold mb-2">
+                    Need Immediate Help?
+                  </h3>
                   <p className="mb-4 text-blue-100">
-                    Check out our comprehensive documentation and FAQ section for quick answers to common questions.
+                    Check out our comprehensive documentation and FAQ section
+                    for quick answers to common questions.
                   </p>
                   <Button variant="secondary">View Documentation</Button>
                 </CardContent>
@@ -134,5 +171,5 @@ export default function ContactPage() {
 
       <Footer />
     </div>
-  )
+  );
 }

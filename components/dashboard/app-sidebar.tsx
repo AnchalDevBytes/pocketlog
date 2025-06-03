@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   Sidebar,
@@ -11,13 +11,28 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Home, CreditCard, PieChart, Wallet, Settings, Download, User, ChevronUp, LogOut } from "lucide-react"
-import Link from "next/link"
-import { useSession, signOut } from "next-auth/react"
-import { usePathname } from "next/navigation"
+} from "@/components/ui/sidebar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Home,
+  CreditCard,
+  PieChart,
+  Wallet,
+  Settings,
+  Download,
+  User,
+  ChevronUp,
+  LogOut,
+} from "lucide-react";
+import Link from "next/link";
+import { useSession, signOut } from "next-auth/react";
+import { usePathname } from "next/navigation";
 
 const menuItems = [
   {
@@ -50,18 +65,18 @@ const menuItems = [
     url: "/dashboard/profile",
     icon: User,
   },
-]
+];
 
 export function AppSidebar() {
-  const { data: session } = useSession()
-  const pathname = usePathname()
+  const { data: session } = useSession();
+  const pathname = usePathname();
 
   return (
     <Sidebar>
       <SidebarHeader>
         <div className="flex items-center space-x-2 px-4 py-2">
           <Wallet className="h-8 w-8 text-blue-600" />
-          <span className="text-xl font-bold">ExpenseTracker</span>
+          <span className="text-xl font-bold">PocketLog</span>
         </div>
       </SidebarHeader>
 
@@ -93,13 +108,20 @@ export function AppSidebar() {
                 <SidebarMenuButton>
                   <Avatar className="h-6 w-6">
                     <AvatarImage src={session?.user?.image || ""} />
-                    <AvatarFallback>{session?.user?.name?.charAt(0) || "U"}</AvatarFallback>
+                    <AvatarFallback>
+                      {session?.user?.name?.charAt(0) || "U"}
+                    </AvatarFallback>
                   </Avatar>
-                  <span className="truncate">{session?.user?.name || "User"}</span>
+                  <span className="truncate">
+                    {session?.user?.name || "User"}
+                  </span>
                   <ChevronUp className="ml-auto" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
-              <DropdownMenuContent side="top" className="w-[--radix-popper-anchor-width]">
+              <DropdownMenuContent
+                side="top"
+                className="w-[--radix-popper-anchor-width]"
+              >
                 <DropdownMenuItem asChild>
                   <Link href="/dashboard/profile">
                     <User className="mr-2 h-4 w-4" />
@@ -122,5 +144,5 @@ export function AppSidebar() {
         </SidebarMenu>
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }
