@@ -29,6 +29,7 @@ import {
   User,
   ChevronUp,
   LogOut,
+  Folder,
 } from "lucide-react";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
@@ -49,6 +50,11 @@ const menuItems = [
     title: "Accounts",
     url: "/dashboard/accounts",
     icon: Wallet,
+  },
+  {
+    title: "Categories",
+    url: "/dashboard/categories",
+    icon: Folder,
   },
   {
     title: "Budgets",

@@ -1,13 +1,13 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "@/lib/store";
 import {
   fetchTransactions,
   addTransaction,
 } from "@/lib/features/transactionSlice";
-import { addCategory, fetchCategories } from "@/lib/features/categorySlice";
+import { fetchCategories } from "@/lib/features/categorySlice";
 import { fetchAccounts } from "@/lib/features/accountSlice";
 import { TransactionForm } from "@/components/dashboard/transaction-form";
 import { TransactionList } from "@/components/dashboard/transaction-list";
@@ -23,12 +23,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { CategoryForm } from "@/components/dashboard/category-form";
-import { useToast } from "@/hooks/use-toast";
 
 export default function TransactionsPage() {
   const dispatch = useDispatch<AppDispatch>();
-  const { toast } = useToast();
+
   const { transactions, loading } = useSelector(
     (state: RootState) => state.transactions
   );
@@ -37,7 +35,7 @@ export default function TransactionsPage() {
   const { accounts } = useSelector((state: RootState) => state.accounts);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [showCategoryForm, setShowCategoryForm] = useState(false);
+
   const [filteredTransactions, setFilteredTransactions] =
     useState(transactions);
 
@@ -64,40 +62,6 @@ export default function TransactionsPage() {
     );
   }
 
-  const handleCreateCategory = async (categoryData: any) => {
-    try {
-      const response = await fetch("/api/categories", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(categoryData),
-      });
-
-      if (response.ok) {
-        const newCategory = await response.json();
-        dispatch(addCategory(newCategory));
-        setShowCategoryForm(false);
-        toast({
-          title: "Success",
-          description: "Category created successfully",
-        });
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        toast({
-          title: "Error",
-          description: error.message || "Failed to create category",
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          title: "Error",
-          description: "Failed to create category",
-          variant: "destructive",
-        });
-      }
-    }
-  };
-
   return (
     <div className="space-y-6">
       <motion.div
@@ -115,44 +79,27 @@ export default function TransactionsPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-5">
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <Button>
-                <Plus className="mr-2 h-4 w-4" />
-                Add Transaction
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Add New Transaction</DialogTitle>
-                <DialogDescription>
-                  Enter the details of your transaction below.
-                </DialogDescription>
-              </DialogHeader>
-              <TransactionForm
-                categories={categories}
-                accounts={accounts}
-                onSubmit={handleAddTransaction}
-              />
-            </DialogContent>
-          </Dialog>
-
-          <Dialog open={showCategoryForm} onOpenChange={setShowCategoryForm}>
-            <DialogTrigger asChild>
-              <Button variant={"outline"}>
-                <Plus className="mr-2 h-4 w-4" />
-                Add Category
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Create New Category</DialogTitle>
-              </DialogHeader>
-              <CategoryForm onSubmit={handleCreateCategory} />
-            </DialogContent>
-          </Dialog>
-        </div>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogTrigger asChild>
+            <Button>
+              <Plus className="mr-2 h-4 w-4" />
+              Add Transaction
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Add New Transaction</DialogTitle>
+              <DialogDescription>
+                Enter the details of your transaction below.
+              </DialogDescription>
+            </DialogHeader>
+            <TransactionForm
+              categories={categories}
+              accounts={accounts}
+              onSubmit={handleAddTransaction}
+            />
+          </DialogContent>
+        </Dialog>
       </motion.div>
 
       <TransactionFilters
