@@ -10,13 +10,15 @@ export interface Category {
 
 interface CategoryState {
   categories: Category[];
-  loading: boolean;
+  categoryFetchLoading: boolean;
+  categoryAddLoading: boolean;
   error: string | null;
 }
 
 const initialState: CategoryState = {
   categories: [],
-  loading: false,
+  categoryAddLoading: false,
+  categoryFetchLoading: false,
   error: null,
 };
 
@@ -58,20 +60,29 @@ const categorySlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchCategories.pending, (state) => {
-        state.loading = true;
+        state.categoryFetchLoading = true;
         state.error = null;
       })
       .addCase(fetchCategories.fulfilled, (state, action) => {
-        state.loading = false;
+        state.categoryFetchLoading = false;
         state.categories = action.payload;
       })
       .addCase(fetchCategories.rejected, (state, action) => {
-        state.loading = false;
+        state.categoryFetchLoading = false;
         state.error = action.error.message || "Failed to fetch categories";
       })
 
+      .addCase(addCategory.pending, (state) => {
+        state.categoryAddLoading = true;
+        state.error = null;
+      })
       .addCase(addCategory.fulfilled, (state, action) => {
+        state.categoryAddLoading = false;
         state.categories.push(action.payload);
+      })
+      .addCase(addCategory.rejected, (state, action) => {
+        state.categoryAddLoading = false;
+        state.error = action.error.message || "Failed to add category";
       });
   },
 });

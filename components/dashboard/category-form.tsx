@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/select";
 
 interface CategoryFormProps {
+  loading?: boolean;
   onSubmit: (data: any) => void;
 }
 
@@ -54,7 +55,7 @@ const categoryColors = [
   "#6366F1",
 ];
 
-export function CategoryForm({ onSubmit }: CategoryFormProps) {
+export function CategoryForm({ loading, onSubmit }: CategoryFormProps) {
   const [formData, setFormData] = useState({
     name: "",
     type: "EXPENSE" as "INCOME" | "EXPENSE",
@@ -142,7 +143,7 @@ export function CategoryForm({ onSubmit }: CategoryFormProps) {
       </div>
 
       <Button type="submit" className="w-full">
-        Create Category
+        {loading ? "Creating..." : "Create Category"}
       </Button>
     </form>
   );

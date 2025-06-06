@@ -18,7 +18,7 @@ import { addCategory } from "@/lib/features/categorySlice";
 
 const Categories = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { categories, loading } = useSelector(
+  const { categories, categoryFetchLoading, categoryAddLoading } = useSelector(
     (state: RootState) => state.categories
   );
 
@@ -29,7 +29,7 @@ const Categories = () => {
     setShowCategoryForm(false);
   };
 
-  if (loading) {
+  if (categoryFetchLoading) {
     return (
       <div className="flex items-center justify-center h-96">
         <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
@@ -65,7 +65,10 @@ const Categories = () => {
             <DialogHeader>
               <DialogTitle>Create New Category</DialogTitle>
             </DialogHeader>
-            <CategoryForm onSubmit={handleCreateCategory} />
+            <CategoryForm
+              onSubmit={handleCreateCategory}
+              loading={categoryAddLoading}
+            />
           </DialogContent>
         </Dialog>
       </motion.div>

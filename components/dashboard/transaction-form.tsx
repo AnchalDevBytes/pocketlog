@@ -1,23 +1,35 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import type { Category } from "@/lib/features/categorySlice"
-import type { BankAccount } from "@/lib/features/accountSlice"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import type { Category } from "@/lib/features/categorySlice";
+import type { BankAccount } from "@/lib/features/accountSlice";
 
 interface TransactionFormProps {
-  categories: Category[]
-  accounts: BankAccount[]
-  onSubmit: (data: any) => void
+  categories: Category[];
+  accounts: BankAccount[];
+  loadingAdd?: boolean;
+  onSubmit: (data: any) => void;
 }
 
-export function TransactionForm({ categories, accounts, onSubmit }: TransactionFormProps) {
+export function TransactionForm({
+  categories,
+  accounts,
+  loadingAdd,
+  onSubmit,
+}: TransactionFormProps) {
   const [formData, setFormData] = useState({
     amount: "",
     description: "",
@@ -25,14 +37,19 @@ export function TransactionForm({ categories, accounts, onSubmit }: TransactionF
     categoryId: "",
     accountId: "",
     date: new Date().toISOString().split("T")[0],
-  })
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!formData.amount || !formData.description || !formData.categoryId || !formData.accountId) {
-      return
+    e.preventDefault();
+    if (
+      !formData.amount ||
+      !formData.description ||
+      !formData.categoryId ||
+      !formData.accountId
+    ) {
+      return;
     }
-    onSubmit(formData)
+    onSubmit(formData);
     setFormData({
       amount: "",
       description: "",
@@ -40,10 +57,12 @@ export function TransactionForm({ categories, accounts, onSubmit }: TransactionF
       categoryId: "",
       accountId: "",
       date: new Date().toISOString().split("T")[0],
-    })
-  }
+    });
+  };
 
-  const filteredCategories = categories.filter((cat) => cat.type === formData.type)
+  const filteredCategories = categories.filter(
+    (cat) => cat.type === formData.type
+  );
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -52,7 +71,9 @@ export function TransactionForm({ categories, accounts, onSubmit }: TransactionF
           <Label htmlFor="type">Type</Label>
           <Select
             value={formData.type}
-            onValueChange={(value: "INCOME" | "EXPENSE") => setFormData({ ...formData, type: value, categoryId: "" })}
+            onValueChange={(value: "INCOME" | "EXPENSE") =>
+              setFormData({ ...formData, type: value, categoryId: "" })
+            }
           >
             <SelectTrigger>
               <SelectValue placeholder="Select type" />
@@ -72,7 +93,9 @@ export function TransactionForm({ categories, accounts, onSubmit }: TransactionF
             step="0.01"
             placeholder="0.00"
             value={formData.amount}
-            onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, amount: e.target.value })
+            }
             required
           />
         </div>
@@ -84,7 +107,9 @@ export function TransactionForm({ categories, accounts, onSubmit }: TransactionF
           id="description"
           placeholder="Enter transaction description"
           value={formData.description}
-          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+          onChange={(e) =>
+            setFormData({ ...formData, description: e.target.value })
+          }
           required
         />
       </div>
@@ -94,7 +119,9 @@ export function TransactionForm({ categories, accounts, onSubmit }: TransactionF
           <Label htmlFor="category">Category</Label>
           <Select
             value={formData.categoryId}
-            onValueChange={(value) => setFormData({ ...formData, categoryId: value })}
+            onValueChange={(value) =>
+              setFormData({ ...formData, categoryId: value })
+            }
           >
             <SelectTrigger>
               <SelectValue placeholder="Select category" />
@@ -114,7 +141,12 @@ export function TransactionForm({ categories, accounts, onSubmit }: TransactionF
 
         <div className="space-y-2">
           <Label htmlFor="account">Account</Label>
-          <Select value={formData.accountId} onValueChange={(value) => setFormData({ ...formData, accountId: value })}>
+          <Select
+            value={formData.accountId}
+            onValueChange={(value) =>
+              setFormData({ ...formData, accountId: value })
+            }
+          >
             <SelectTrigger>
               <SelectValue placeholder="Select account" />
             </SelectTrigger>
@@ -141,8 +173,8 @@ export function TransactionForm({ categories, accounts, onSubmit }: TransactionF
       </div>
 
       <Button type="submit" className="w-full">
-        Add Transaction
+        {loadingAdd ? "Adding..." : "Add Transaction"}
       </Button>
     </form>
-  )
+  );
 }

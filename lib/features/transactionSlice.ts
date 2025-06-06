@@ -1,44 +1,49 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 export interface Transaction {
-  id: string
-  amount: number
-  description: string
-  type: "INCOME" | "EXPENSE"
-  date: string
-  categoryId: string
-  accountId: string
+  id: string;
+  amount: number;
+  description: string;
+  type: "INCOME" | "EXPENSE";
+  date: string;
+  categoryId: string;
+  accountId: string;
   category?: {
-    id: string
-    name: string
-    color: string
-    icon: string
-  }
+    id: string;
+    name: string;
+    color: string;
+    icon: string;
+  };
   account?: {
-    id: string
-    name: string
-  }
+    id: string;
+    name: string;
+  };
 }
 
 interface TransactionState {
-  transactions: Transaction[]
-  loading: boolean
-  error: string | null
+  transactions: Transaction[];
+  loadingFetch: boolean;
+  loadingAdd: boolean;
+  error: string | null;
 }
 
 const initialState: TransactionState = {
   transactions: [],
-  loading: false,
+  loadingFetch: false,
+  loadingAdd: false,
   error: null,
-}
+};
 
-export const fetchTransactions = createAsyncThunk("transactions/fetchTransactions", async () => {
-  const response = await fetch("/api/transactions")
-  if (!response.ok) {
-    throw new Error("Failed to fetch transactions")
+export const fetchTransactions = createAsyncThunk(
+  "transactions/fetchTransactions",
+  async () => {
+    const response = await fetch("/api/transactions");
+    if (!response.ok) {
+      throw new Error("Failed to fetch transactions");
+    }
+    return response.json();
   }
-  return response.json()
-})
+);
 
 export const addTransaction = createAsyncThunk(
   "transactions/addTransaction",
@@ -49,13 +54,13 @@ export const addTransaction = createAsyncThunk(
         "Content-Type": "application/json",
       },
       body: JSON.stringify(transaction),
-    })
+    });
     if (!response.ok) {
-      throw new Error("Failed to add transaction")
+      throw new Error("Failed to add transaction");
     }
-    return response.json()
-  },
-)
+    return response.json();
+  }
+);
 
 const transactionSlice = createSlice({
   name: "transactions",
@@ -64,21 +69,31 @@ const transactionSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchTransactions.pending, (state) => {
-        state.loading = true
-        state.error = null
+        state.loadingFetch = true;
+        state.error = null;
       })
       .addCase(fetchTransactions.fulfilled, (state, action) => {
-        state.loading = false
-        state.transactions = action.payload
+        state.loadingFetch = false;
+        state.transactions = action.payload;
       })
       .addCase(fetchTransactions.rejected, (state, action) => {
-        state.loading = false
-        state.error = action.error.message || "Failed to fetch transactions"
+        state.loadingFetch = false;
+        state.error = action.error.message || "Failed to fetch transactions";
+      })
+
+      .addCase(addTransaction.pending, (state) => {
+        state.loadingAdd = true;
+        state.error = null;
       })
       .addCase(addTransaction.fulfilled, (state, action) => {
-        state.transactions.push(action.payload)
+        state.loadingAdd = false;
+        state.transactions.push(action.payload);
       })
+      .addCase(addTransaction.rejected, (state, action) => {
+        state.loadingAdd = false;
+        state.error = action.error.message || "Failed to add transaction";
+      });
   },
-})
+});
 
-export default transactionSlice.reducer
+export default transactionSlice.reducer;

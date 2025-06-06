@@ -27,7 +27,7 @@ import {
 export default function TransactionsPage() {
   const dispatch = useDispatch<AppDispatch>();
 
-  const { transactions, loading } = useSelector(
+  const { transactions, loadingFetch, loadingAdd } = useSelector(
     (state: RootState) => state.transactions
   );
   const { categories } = useSelector((state: RootState) => state.categories);
@@ -54,7 +54,7 @@ export default function TransactionsPage() {
     setIsDialogOpen(false);
   };
 
-  if (loading) {
+  if (loadingFetch) {
     return (
       <div className="flex items-center justify-center h-96">
         <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
@@ -97,6 +97,7 @@ export default function TransactionsPage() {
               categories={categories}
               accounts={accounts}
               onSubmit={handleAddTransaction}
+              loadingAdd={loadingAdd}
             />
           </DialogContent>
         </Dialog>
