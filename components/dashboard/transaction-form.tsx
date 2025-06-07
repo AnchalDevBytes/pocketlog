@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,28 +16,62 @@ import {
 } from "@/components/ui/select";
 import type { Category } from "@/lib/features/categorySlice";
 import type { BankAccount } from "@/lib/features/accountSlice";
+import { Transaction } from "@/lib/features/transactionSlice";
 
 interface TransactionFormProps {
   categories: Category[];
   accounts: BankAccount[];
   loadingAdd?: boolean;
   onSubmit: (data: any) => void;
+  initialData?: Transaction | null;
 }
+
+const getDefaultFormData = () => ({
+  amount: "",
+  description: "",
+  type: "EXPENSE" as "INCOME" | "EXPENSE",
+  categoryId: "",
+  accountId: "",
+  date: new Date().toISOString().split("T")[0],
+});
 
 export function TransactionForm({
   categories,
   accounts,
   loadingAdd,
   onSubmit,
+  initialData,
 }: TransactionFormProps) {
-  const [formData, setFormData] = useState({
-    amount: "",
-    description: "",
-    type: "EXPENSE" as "INCOME" | "EXPENSE",
-    categoryId: "",
-    accountId: "",
-    date: new Date().toISOString().split("T")[0],
+  const [formData, setFormData] = useState(() => {
+    if (initialData) {
+      return {
+        amount: initialData.amount.toString(),
+        description: initialData.description,
+        type: initialData.type,
+        categoryId: initialData.categoryId,
+        accountId: initialData.accountId,
+        date: new Date(initialData.date).toISOString().split("T")[0],
+      };
+    }
+    return getDefaultFormData();
   });
+
+  const isEditMode = !!initialData;
+
+  // useEffect(() => {
+  //   if (initialData) {
+  //     setFormData({
+  //       amount: initialData.amount.toString(),
+  //       description: initialData.description,
+  //       type: initialData.type,
+  //       categoryId: initialData.categoryId,
+  //       accountId: initialData.accountId,
+  //       date: new Date(initialData.date).toISOString().split("T")[0],
+  //     });
+  //   } else {
+  //     setFormData(getDefaultFormData());
+  //   }
+  // }, [initialData]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,14 +84,6 @@ export function TransactionForm({
       return;
     }
     onSubmit(formData);
-    setFormData({
-      amount: "",
-      description: "",
-      type: "EXPENSE",
-      categoryId: "",
-      accountId: "",
-      date: new Date().toISOString().split("T")[0],
-    });
   };
 
   const filteredCategories = categories.filter(
@@ -172,8 +198,14 @@ export function TransactionForm({
         />
       </div>
 
-      <Button type="submit" className="w-full">
-        {loadingAdd ? "Adding..." : "Add Transaction"}
+      <Button type="submit" className="w-full" disabled={loadingAdd}>
+        {loadingAdd
+          ? isEditMode
+            ? "Updating..."
+            : "Adding..."
+          : isEditMode
+          ? "Update Transaction"
+          : "Add Transaction"}
       </Button>
     </form>
   );

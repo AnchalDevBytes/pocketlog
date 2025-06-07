@@ -6,6 +6,8 @@ import type { RootState, AppDispatch } from "@/lib/store";
 import {
   fetchTransactions,
   addTransaction,
+  updatedTransaction,
+  type Transaction,
 } from "@/lib/features/transactionSlice";
 import { fetchCategories } from "@/lib/features/categorySlice";
 import { fetchAccounts } from "@/lib/features/accountSlice";
@@ -30,14 +32,15 @@ export default function TransactionsPage() {
   const { transactions, loadingFetch, loadingAdd } = useSelector(
     (state: RootState) => state.transactions
   );
-  const { categories } = useSelector((state: RootState) => state.categories);
 
+  const { categories } = useSelector((state: RootState) => state.categories);
   const { accounts } = useSelector((state: RootState) => state.accounts);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-
   const [filteredTransactions, setFilteredTransactions] =
     useState(transactions);
+  const [editingTransaction, setEditingTransaction] =
+    useState<Transaction | null>(null);
 
   useEffect(() => {
     dispatch(fetchTransactions());
@@ -49,8 +52,24 @@ export default function TransactionsPage() {
     setFilteredTransactions(transactions);
   }, [transactions]);
 
-  const handleAddTransaction = async (transactionData: any) => {
-    await dispatch(addTransaction(transactionData));
+  const handleEdit = (transaction: Transaction) => {
+    setEditingTransaction(transaction);
+    setIsDialogOpen(true);
+  };
+
+  const handleAdd = () => {
+    setEditingTransaction(null);
+    setIsDialogOpen(true);
+  };
+
+  const handleSubmit = async (transactionData: any) => {
+    if (editingTransaction) {
+      await dispatch(
+        updatedTransaction({ ...transactionData, id: editingTransaction.id })
+      );
+    } else {
+      await dispatch(addTransaction(transactionData));
+    }
     setIsDialogOpen(false);
   };
 
@@ -81,23 +100,31 @@ export default function TransactionsPage() {
 
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button>
+            <Button onClick={handleAdd}>
               <Plus className="mr-2 h-4 w-4" />
               Add Transaction
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
-              <DialogTitle>Add New Transaction</DialogTitle>
+              <DialogTitle>
+                {editingTransaction
+                  ? "Edit Transaction"
+                  : "Add New Transaction"}
+              </DialogTitle>
               <DialogDescription>
-                Enter the details of your transaction below.
+                {editingTransaction
+                  ? "Update the details of your transaction below."
+                  : "Enter the details of your transaction below."}
               </DialogDescription>
             </DialogHeader>
             <TransactionForm
+              key={editingTransaction ? editingTransaction.id : "new"}
               categories={categories}
               accounts={accounts}
-              onSubmit={handleAddTransaction}
+              onSubmit={handleSubmit}
               loadingAdd={loadingAdd}
+              initialData={editingTransaction}
             />
           </DialogContent>
         </Dialog>
@@ -110,7 +137,10 @@ export default function TransactionsPage() {
         onFilter={setFilteredTransactions}
       />
 
-      <TransactionList transactions={filteredTransactions} />
+      <TransactionList
+        transactions={filteredTransactions}
+        onEdit={handleEdit}
+      />
     </div>
   );
 }

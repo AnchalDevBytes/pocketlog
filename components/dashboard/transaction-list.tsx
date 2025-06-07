@@ -1,34 +1,58 @@
-"use client"
+"use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { formatCurrency, formatDate } from "@/lib/utils"
-import type { Transaction } from "@/lib/features/transactionSlice"
-import { motion } from "framer-motion"
-import { Trash2, Edit } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { formatCurrency, formatDate } from "@/lib/utils";
+import {
+  deleteTransaction,
+  type Transaction,
+} from "@/lib/features/transactionSlice";
+import { motion } from "framer-motion";
+import { Trash2, Edit } from "lucide-react";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/lib/store";
 
 interface TransactionListProps {
-  transactions: Transaction[]
+  transactions: Transaction[];
+  onEdit: (transaction: Transaction) => void;
 }
 
-export function TransactionList({ transactions }: TransactionListProps) {
+export function TransactionList({
+  transactions,
+  onEdit,
+}: TransactionListProps) {
+  const dispatch = useDispatch<AppDispatch>();
+
+  const handleDelete = (id: string) => {
+    dispatch(deleteTransaction(id));
+  };
+
   if (transactions.length === 0) {
     return (
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
         <Card>
           <CardContent className="text-center py-8">
             <p className="text-slate-500 dark:text-slate-400">
-              No transactions found. Try adjusting your filters or add a new transaction.
+              No transactions found. Try adjusting your filters or add a new
+              transaction.
             </p>
           </CardContent>
         </Card>
       </motion.div>
-    )
+    );
   }
 
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+    >
       <Card>
         <CardHeader>
           <CardTitle>All Transactions ({transactions.length})</CardTitle>
@@ -47,14 +71,18 @@ export function TransactionList({ transactions }: TransactionListProps) {
                   <div className="flex-shrink-0">
                     <div
                       className={`w-12 h-12 rounded-full flex items-center justify-center text-lg ${
-                        transaction.type === "INCOME" ? "bg-green-100 dark:bg-green-900" : "bg-red-100 dark:bg-red-900"
+                        transaction.type === "INCOME"
+                          ? "bg-green-100 dark:bg-green-900"
+                          : "bg-red-100 dark:bg-red-900"
                       }`}
                     >
                       {transaction.category?.icon || "💰"}
                     </div>
                   </div>
                   <div>
-                    <p className="font-medium text-slate-900 dark:text-white">{transaction.description}</p>
+                    <p className="font-medium text-slate-900 dark:text-white">
+                      {transaction.description}
+                    </p>
                     <div className="flex items-center space-x-2 mt-1">
                       <Badge
                         variant="secondary"
@@ -66,7 +94,9 @@ export function TransactionList({ transactions }: TransactionListProps) {
                       >
                         {transaction.category?.name}
                       </Badge>
-                      <span className="text-sm text-slate-500 dark:text-slate-400">{transaction.account?.name}</span>
+                      <span className="text-sm text-slate-500 dark:text-slate-400">
+                        {transaction.account?.name}
+                      </span>
                       <span className="text-sm text-slate-500 dark:text-slate-400">
                         {formatDate(new Date(transaction.date))}
                       </span>
@@ -78,7 +108,9 @@ export function TransactionList({ transactions }: TransactionListProps) {
                   <div className="text-right">
                     <p
                       className={`font-semibold text-lg ${
-                        transaction.type === "INCOME" ? "text-green-600" : "text-red-600"
+                        transaction.type === "INCOME"
+                          ? "text-green-600"
+                          : "text-red-600"
                       }`}
                     >
                       {transaction.type === "INCOME" ? "+" : "-"}
@@ -87,10 +119,21 @@ export function TransactionList({ transactions }: TransactionListProps) {
                   </div>
 
                   <div className="flex items-center space-x-2">
-                    <Button variant="ghost" size="sm">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onEdit(transaction)}
+                    >
                       <Edit className="h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700">
+                    <Button
+                      onClick={() => {
+                        handleDelete(transaction.id);
+                      }}
+                      variant="ghost"
+                      size="sm"
+                      className="text-red-600 hover:text-red-700"
+                    >
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
@@ -101,5 +144,5 @@ export function TransactionList({ transactions }: TransactionListProps) {
         </CardContent>
       </Card>
     </motion.div>
-  )
+  );
 }

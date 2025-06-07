@@ -62,6 +62,40 @@ export const addTransaction = createAsyncThunk(
   }
 );
 
+export const updatedTransaction = createAsyncThunk(
+  "transactions/updatedTransaction",
+  async (transaction: Transaction) => {
+    const response = await fetch("/api/transactions", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(transaction),
+    });
+    if (!response.ok) {
+      throw new Error("Failed to update transaction");
+    }
+    return response.json();
+  }
+);
+
+export const deleteTransaction = createAsyncThunk(
+  "transactions/deleteTransaction",
+  async (id: string) => {
+    const response = await fetch(`/api/transactions`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id }),
+    });
+    if (!response.ok) {
+      throw new Error("Failed to delete transaction");
+    }
+    return id;
+  }
+);
+
 const transactionSlice = createSlice({
   name: "transactions",
   initialState,
@@ -92,6 +126,30 @@ const transactionSlice = createSlice({
       .addCase(addTransaction.rejected, (state, action) => {
         state.loadingAdd = false;
         state.error = action.error.message || "Failed to add transaction";
+      })
+
+      .addCase(updatedTransaction.pending, (state) => {
+        state.loadingAdd = true;
+        state.error = null;
+      })
+      .addCase(updatedTransaction.fulfilled, (state, action) => {
+        state.loadingAdd = false;
+        const index = state.transactions.findIndex(
+          (t) => t.id === action.payload.id
+        );
+        if (index !== -1) {
+          state.transactions[index] = action.payload;
+        }
+      })
+      .addCase(updatedTransaction.rejected, (state, action) => {
+        state.loadingAdd = false;
+        state.error = action.error.message || "Failed to update transaction";
+      })
+
+      .addCase(deleteTransaction.fulfilled, (state, action) => {
+        state.transactions = state.transactions.filter(
+          (t) => t.id !== action.payload
+        );
       });
   },
 });
