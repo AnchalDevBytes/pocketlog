@@ -4,30 +4,21 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatCurrency, formatDate } from "@/lib/utils";
-import {
-  deleteTransaction,
-  type Transaction,
-} from "@/lib/features/transactionSlice";
 import { motion } from "framer-motion";
 import { Trash2, Edit } from "lucide-react";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/lib/store";
+import { Transaction } from "@/lib/features/transactionSlice";
 
 interface TransactionListProps {
   transactions: Transaction[];
   onEdit: (transaction: Transaction) => void;
+  onDelete: (id: string) => void;
 }
 
 export function TransactionList({
   transactions,
   onEdit,
+  onDelete,
 }: TransactionListProps) {
-  const dispatch = useDispatch<AppDispatch>();
-
-  const handleDelete = (id: string) => {
-    dispatch(deleteTransaction(id));
-  };
-
   if (transactions.length === 0) {
     return (
       <motion.div
@@ -127,9 +118,7 @@ export function TransactionList({
                       <Edit className="h-4 w-4" />
                     </Button>
                     <Button
-                      onClick={() => {
-                        handleDelete(transaction.id);
-                      }}
+                      onClick={() => onDelete(transaction.id)}
                       variant="ghost"
                       size="sm"
                       className="text-red-600 hover:text-red-700"

@@ -8,6 +8,7 @@ import {
   addTransaction,
   updatedTransaction,
   type Transaction,
+  deleteTransaction,
 } from "@/lib/features/transactionSlice";
 import { fetchCategories } from "@/lib/features/categorySlice";
 import { fetchAccounts } from "@/lib/features/accountSlice";
@@ -25,6 +26,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export default function TransactionsPage() {
   const dispatch = useDispatch<AppDispatch>();
@@ -40,6 +51,10 @@ export default function TransactionsPage() {
   const [filteredTransactions, setFilteredTransactions] =
     useState(transactions);
   const [editingTransaction, setEditingTransaction] =
+    useState<Transaction | null>(null);
+
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [transactionToDelete, setTransactionToDelete] =
     useState<Transaction | null>(null);
 
   useEffect(() => {
@@ -60,6 +75,24 @@ export default function TransactionsPage() {
   const handleAdd = () => {
     setEditingTransaction(null);
     setIsDialogOpen(true);
+  };
+
+  const handleDeleteRequest = (id: string) => {
+    const transaction = transactions.find(
+      (transaction) => transaction.id === id
+    );
+    if (transaction) {
+      setTransactionToDelete(transaction);
+      setIsDeleteDialogOpen(true);
+    }
+  };
+
+  const handleConfirmDelete = () => {
+    if (transactionToDelete) {
+      dispatch(deleteTransaction(transactionToDelete.id));
+      setIsDeleteDialogOpen(false);
+      setTransactionToDelete(null);
+    }
   };
 
   const handleSubmit = async (transactionData: any) => {
@@ -140,7 +173,33 @@ export default function TransactionsPage() {
       <TransactionList
         transactions={filteredTransactions}
         onEdit={handleEdit}
+        onDelete={handleDeleteRequest}
       />
+
+      {/* --- DELETE CONFIRMATION DIALOG --- */}
+      <AlertDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the
+              transaction:
+              <span className="block font-semibold mt-2">
+                {transactionToDelete?.description}
+              </span>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmDelete}>
+              Continue
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

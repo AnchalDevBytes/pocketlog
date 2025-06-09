@@ -21,7 +21,6 @@ import { ArrowLeft } from "lucide-react";
 
 export default function AccountDetailsPage() {
   const dispatch = useDispatch<AppDispatch>();
-  const router = useRouter();
   const params = useParams();
   const accountId = params.accountId as string;
 
@@ -106,7 +105,11 @@ export default function AccountDetailsPage() {
         </CardContent>
       </Card>
 
-      <TransactionList transactions={accountTransactions} onEdit={() => {}} />
+      <TransactionList
+        transactions={accountTransactions}
+        onEdit={() => {}}
+        onDelete={() => {}}
+      />
     </div>
   );
 }
