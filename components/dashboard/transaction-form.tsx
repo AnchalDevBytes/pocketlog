@@ -58,21 +58,6 @@ export function TransactionForm({
 
   const isEditMode = !!initialData;
 
-  // useEffect(() => {
-  //   if (initialData) {
-  //     setFormData({
-  //       amount: initialData.amount.toString(),
-  //       description: initialData.description,
-  //       type: initialData.type,
-  //       categoryId: initialData.categoryId,
-  //       accountId: initialData.accountId,
-  //       date: new Date(initialData.date).toISOString().split("T")[0],
-  //     });
-  //   } else {
-  //     setFormData(getDefaultFormData());
-  //   }
-  // }, [initialData]);
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (
