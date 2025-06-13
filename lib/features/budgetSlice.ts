@@ -8,6 +8,8 @@ export interface Budget {
   period: "WEEKLY" | "MONTHLY" | "YEARLY";
   startDate: string;
   endDate: string;
+  categories?: { id: string }[];
+  categoryIds?: string[];
 }
 
 interface BudgetState {
@@ -37,7 +39,7 @@ export const fetchBudgets = createAsyncThunk(
 
 export const addBudget = createAsyncThunk(
   "budgets/addBudget",
-  async (budget: Omit<Budget, "id" | "spent">) => {
+  async (budget: Omit<Budget, "id" | "spent" | "categories">) => {
     const response = await fetch("/api/budgets", {
       method: "POST",
       headers: {
@@ -54,7 +56,7 @@ export const addBudget = createAsyncThunk(
 
 export const updateBudget = createAsyncThunk(
   "budgets/updateBudget",
-  async (budget: Omit<Budget, "spent">) => {
+  async (budget: Omit<Budget, "spent" | "categories">) => {
     const response = await fetch(`/api/budgets`, {
       method: "PATCH",
       headers: {
@@ -111,7 +113,7 @@ const budgetSlice = createSlice({
       })
       .addCase(addBudget.fulfilled, (state, action) => {
         state.loadingAddAndUpdate = false;
-        state.budgets.push(action.payload);
+        state.budgets = action.payload;
       })
       .addCase(addBudget.rejected, (state, action) => {
         state.loadingAddAndUpdate = false;
@@ -128,7 +130,8 @@ const budgetSlice = createSlice({
           (budget) => budget.id === action.payload.id
         );
         if (index !== -1) {
-          state.budgets[index] = action.payload;
+          const oldBudget = state.budgets[index];
+          state.budgets[index] = { ...oldBudget, ...action.payload };
         }
       })
       .addCase(updateBudget.rejected, (state, action) => {

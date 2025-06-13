@@ -34,12 +34,15 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { fetchCategories } from "@/lib/features/categorySlice";
 
 export default function BudgetsPage() {
   const dispatch = useDispatch<AppDispatch>();
   const { budgets, loading, loadingAddAndUpdate } = useSelector(
     (state: RootState) => state.budgets
   );
+
+  const { categories } = useSelector((state: RootState) => state.categories);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingBudget, setEditingBudget] = useState<Budget | null>(null);
@@ -49,6 +52,7 @@ export default function BudgetsPage() {
 
   useEffect(() => {
     dispatch(fetchBudgets());
+    dispatch(fetchCategories());
   }, [dispatch]);
 
   const handleAddClick = () => {
@@ -83,6 +87,7 @@ export default function BudgetsPage() {
     } else {
       await dispatch(addBudget(budgetData));
     }
+    dispatch(fetchBudgets());
     setIsDialogOpen(false);
   };
 
@@ -93,6 +98,8 @@ export default function BudgetsPage() {
       </div>
     );
   }
+
+  console.log(budgets);
 
   return (
     <div className="space-y-6">
@@ -134,12 +141,13 @@ export default function BudgetsPage() {
               onSubmit={handleSubmit}
               initialData={editingBudget}
               loading={loadingAddAndUpdate}
+              categories={categories}
             />
           </DialogContent>
         </Dialog>
       </motion.div>
 
-      {budgets.length === 0 ? (
+      {!budgets || budgets.length === 0 ? (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -153,15 +161,20 @@ export default function BudgetsPage() {
         </motion.div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {budgets.map((budget, index) => (
-            <BudgetCard
-              key={budget.id}
-              budget={budget}
-              index={index}
-              onEdit={handleEditClick}
-              onDelete={handleDeleteRequest}
-            />
-          ))}
+          {budgets?.map((budget, index) => {
+            if (!budget || typeof budget !== "object" || !budget.id) {
+              return null;
+            }
+            return (
+              <BudgetCard
+                key={budget.id}
+                budget={budget}
+                index={index}
+                onEdit={handleEditClick}
+                onDelete={handleDeleteRequest}
+              />
+            );
+          })}
         </div>
       )}
 

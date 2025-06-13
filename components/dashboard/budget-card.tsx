@@ -60,7 +60,7 @@ export function BudgetCard({
                 <Target className="h-5 w-5" />
               </div>
               <div>
-                <CardTitle className="text-lg">{budget.name}</CardTitle>
+                <CardTitle className="text-lg">{budget?.name}</CardTitle>
                 <div className="flex items-center space-x-2 mt-1">
                   <Badge variant="secondary" className="text-xs">
                     {budget.period.toLowerCase()}
@@ -103,7 +103,8 @@ export function BudgetCard({
                 Progress
               </p>
               <p className="text-sm font-medium">
-                {formatCurrency(budget.spent)} / {formatCurrency(budget.amount)}
+                {formatCurrency(budget?.spent)} /{" "}
+                {formatCurrency(budget?.amount)}
               </p>
             </div>
             <Progress
@@ -114,7 +115,7 @@ export function BudgetCard({
               <span>{progress.toFixed(1)}% used</span>
               <span>
                 {isOverBudget
-                  ? `${formatCurrency(budget.spent - budget.amount)} over`
+                  ? `${formatCurrency(budget?.spent - budget?.amount)} over`
                   : `${formatCurrency(remaining)} remaining`}
               </span>
             </div>
@@ -125,7 +126,7 @@ export function BudgetCard({
               <AlertTriangle className="h-4 w-4 text-red-600" />
               <p className="text-sm text-red-600 dark:text-red-400">
                 You've exceeded this budget by{" "}
-                {formatCurrency(budget.spent - budget.amount)}
+                {formatCurrency(budget?.spent - budget?.amount)}
               </p>
             </div>
           )}
@@ -148,7 +149,7 @@ export function BudgetCard({
                 </p>
                 <p className="font-semibold text-red-600">
                   {formatCurrency(
-                    budget.spent /
+                    budget?.spent /
                       Math.max(
                         1,
                         Math.ceil(
