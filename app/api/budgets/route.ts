@@ -18,12 +18,47 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    const budgets = await prisma.budget.findMany({
+    const budgetsFromDb = await prisma.budget.findMany({
       where: { userId: user.id },
+      include: {
+        categories: {
+          select: { id: true },
+        },
+      },
       orderBy: { createdAt: "desc" },
     });
 
-    return NextResponse.json(budgets);
+    if (!budgetsFromDb || budgetsFromDb.length === 0) {
+      return NextResponse.json([]);
+    }
+
+    const budgetsWithSpent = await Promise.all(
+      budgetsFromDb.map(async (budget) => {
+        const categoryIds = budget.categories.map((cat) => cat.id);
+
+        if (categoryIds.length === 0) {
+          return { ...budget, spent: 0 };
+        }
+
+        const result = await prisma.transaction.aggregate({
+          _sum: { amount: true },
+          where: {
+            userId: user.id,
+            type: "EXPENSE",
+            categoryId: { in: categoryIds }, // Sum transactions from any of the budget's categories
+            date: {
+              gte: budget.startDate,
+              lte: budget.endDate,
+            },
+          },
+        });
+
+        const spent = result._sum.amount || 0;
+        return { ...budget, spent };
+      })
+    );
+
+    return NextResponse.json(budgetsWithSpent);
   } catch (error) {
     console.error("Error fetching budgets:", error);
     return NextResponse.json(
@@ -49,7 +84,14 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { name, amount, period, startDate, endDate } = body;
+    const { name, amount, period, startDate, endDate, categoryIds } = body;
+
+    if (!categoryIds || categoryIds.length === 0) {
+      return NextResponse.json(
+        { error: "At least one category is required" },
+        { status: 400 }
+      );
+    }
 
     const budget = await prisma.budget.create({
       data: {
@@ -59,6 +101,16 @@ export async function POST(request: NextRequest) {
         startDate: new Date(startDate),
         endDate: new Date(endDate),
         userId: user.id,
+      },
+    });
+
+    await prisma.category.updateMany({
+      where: {
+        id: { in: categoryIds },
+        userId: user.id, // Security check
+      },
+      data: {
+        budgetId: budget.id,
       },
     });
 
@@ -88,7 +140,7 @@ export async function PATCH(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { id, name, amount, period, startDate, endDate } = body;
+    const { id, name, amount, period, startDate, endDate, categoryIds } = body;
 
     if (!id) {
       return NextResponse.json(
@@ -97,18 +149,47 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    const updatedBudget = await prisma.budget.update({
-      where: { id },
-      data: {
-        name,
-        amount: amount ? Number.parseFloat(amount) : undefined,
-        period,
-        startDate: startDate ? new Date(startDate) : undefined,
-        endDate: endDate ? new Date(endDate) : undefined,
-      },
+    //To ensure user owns the budget
+    const existingBudget = await prisma.budget.findFirst({
+      where: { id, userId: user.id },
+      include: { categories: { select: { id: true } } },
+    });
+    if (!existingBudget) {
+      return NextResponse.json(
+        { error: "Budget not found or access denied" },
+        { status: 404 }
+      );
+    }
+
+    // Transaction to ensure data integrity
+    await prisma.$transaction(async (tx) => {
+      // 1. Update the budget details
+      await tx.budget.update({
+        where: { id },
+        data: {
+          name,
+          amount: amount ? Number.parseFloat(amount) : undefined,
+          period,
+          startDate: startDate ? new Date(startDate) : undefined,
+          endDate: endDate ? new Date(endDate) : undefined,
+        },
+      });
+
+      // 2. Unlink all old categories from this budget
+      const oldCategoryIds = existingBudget.categories.map((cat) => cat.id);
+      await tx.category.updateMany({
+        where: { id: { in: oldCategoryIds } },
+        data: { budgetId: null },
+      });
+
+      // 3. Link all new categories to this budget
+      await tx.category.updateMany({
+        where: { id: { in: categoryIds } },
+        data: { budgetId: id },
+      });
     });
 
-    return NextResponse.json(updatedBudget);
+    return NextResponse.json({ id, ...body });
   } catch (error) {
     console.error("Error updating budget:", error);
     return NextResponse.json(
@@ -143,11 +224,30 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    const deletedBudget = await prisma.budget.delete({
-      where: { id },
+    const existingBudget = await prisma.budget.findFirst({
+      where: { id, userId: user.id },
+    });
+    if (!existingBudget) {
+      return NextResponse.json(
+        { error: "Budget not found or access denied" },
+        { status: 404 }
+      );
+    }
+
+    await prisma.$transaction(async (tx) => {
+      // 1. Unlink all categories associated with this budget
+      await tx.category.updateMany({
+        where: { budgetId: id },
+        data: { budgetId: null },
+      });
+
+      // 2. Delete the budget itself
+      await tx.budget.delete({
+        where: { id },
+      });
     });
 
-    return NextResponse.json(deletedBudget);
+    return NextResponse.json({ message: "Budget deleted successfully" });
   } catch (error) {
     console.error("Error deleting budget:", error);
     return NextResponse.json(
