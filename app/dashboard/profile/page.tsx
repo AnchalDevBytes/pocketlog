@@ -16,14 +16,19 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { motion } from "framer-motion";
 import { User, Bell, Shield, Camera } from "lucide-react";
-import { Switch } from "@/components/ui/switch";
-import { toast } from "@/hooks/use-toast";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/lib/store";
+import { fetchProfile, updateProfile } from "@/lib/features/profileSlice";
 
 export default function ProfilePage() {
+  const dispatch = useDispatch<AppDispatch>();
   const { data: session, update: updateSession } = useSession();
 
+  const { data: profile, loading } = useSelector(
+    (state: RootState) => state.profile
+  );
+
   const [isEditing, setIsEditing] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [originalProfileData, setOriginalProfileData] = useState({});
 
   const [profileData, setProfileData] = useState({
@@ -34,32 +39,21 @@ export default function ProfilePage() {
   });
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const response = await fetch("/api/profile");
-        if (!response.ok) {
-          throw new Error("Failed to fetch profile data");
-        }
-        const data = await response.json();
-        setProfileData({
-          name: data.name || "",
-          email: data.email || "",
-          phone: data.phone || "",
-          timezone: data.timezone || "",
-        });
-        //saving the initial state for "cancel" button
-        setOriginalProfileData;
-      } catch (error) {
-        console.error(error);
-        toast({
-          title: "Error",
-          description: "Could not load your profile.",
-          variant: "destructive",
-        });
-      }
-    };
-    fetchProfile();
-  }, []);
+    dispatch(fetchProfile());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (profile) {
+      const initialData = {
+        name: profile.name || "",
+        email: profile.email || "",
+        phone: profile.phone || "",
+        timezone: profile.timezone || "UTC",
+      };
+      setProfileData(initialData);
+      setOriginalProfileData(initialData);
+    }
+  }, [profile]);
 
   const handleEditClick = () => {
     setOriginalProfileData(profileData);
@@ -79,39 +73,19 @@ export default function ProfilePage() {
   // });
 
   const handleSaveProfile = async () => {
-    setIsLoading(true);
-    try {
-      const response = await fetch("/api/profile", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: profileData.name,
-          phone: profileData.phone,
-          timezone: profileData.timezone,
-        }),
-      });
+    const result = await dispatch(
+      updateProfile({
+        name: profileData.name,
+        phone: profileData.phone,
+        timezone: profileData.timezone,
+      })
+    );
 
-      if (!response.ok) {
-        throw new Error("Failed to save profile.");
-      }
+    if (updateProfile.fulfilled.match(result)) {
       if (session?.user?.name !== profileData.name) {
         await updateSession({ name: profileData.name });
       }
-
-      toast({
-        title: "Success",
-        description: "Your profile has been updated.",
-      });
       setIsEditing(false);
-    } catch (error) {
-      console.error(error);
-      toast({
-        title: "Error",
-        description: "Could not save your profile. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -196,7 +170,7 @@ export default function ProfilePage() {
                       onChange={(e) =>
                         setProfileData({ ...profileData, name: e.target.value })
                       }
-                      disabled={!isEditing || isLoading}
+                      disabled={!isEditing || loading}
                     />
                   </div>
                   <div className="space-y-2">
@@ -219,7 +193,7 @@ export default function ProfilePage() {
                           phone: e.target.value,
                         })
                       }
-                      disabled={!isEditing || isLoading}
+                      disabled={!isEditing || loading}
                       placeholder="Enter your phone number"
                     />
                   </div>
@@ -234,7 +208,7 @@ export default function ProfilePage() {
                           timezone: e.target.value,
                         })
                       }
-                      disabled={!isEditing || isLoading}
+                      disabled={!isEditing || loading}
                     />
                   </div>
                 </div>
@@ -242,8 +216,8 @@ export default function ProfilePage() {
                 <div className="flex space-x-4">
                   {isEditing ? (
                     <>
-                      <Button onClick={handleSaveProfile} disabled={isLoading}>
-                        {isLoading ? "Saving..." : "Save Profile"}
+                      <Button onClick={handleSaveProfile} disabled={loading}>
+                        {loading ? "Saving..." : "Save Profile"}
                       </Button>
                       <Button variant="outline" onClick={handleCancelClick}>
                         Cancel
