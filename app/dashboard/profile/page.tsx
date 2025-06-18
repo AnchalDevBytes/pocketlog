@@ -1,50 +1,138 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useSession } from "next-auth/react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { motion } from "framer-motion"
-import { User, Bell, Shield, Camera } from "lucide-react"
-import { Switch } from "@/components/ui/switch"
+import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { motion } from "framer-motion";
+import { User, Bell, Shield, Camera } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { toast } from "@/hooks/use-toast";
 
 export default function ProfilePage() {
-  const { data: session } = useSession()
-  const [isEditing, setIsEditing] = useState(false)
+  const { data: session, update: updateSession } = useSession();
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [originalProfileData, setOriginalProfileData] = useState({});
+
   const [profileData, setProfileData] = useState({
-    name: session?.user?.name || "",
-    email: session?.user?.email || "",
+    name: "",
+    email: "",
     phone: "",
-    timezone: "UTC",
-  })
+    timezone: "",
+  });
 
-  const [notifications, setNotifications] = useState({
-    emailNotifications: true,
-    budgetAlerts: true,
-    weeklyReports: false,
-    transactionAlerts: true,
-  })
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await fetch("/api/profile");
+        if (!response.ok) {
+          throw new Error("Failed to fetch profile data");
+        }
+        const data = await response.json();
+        setProfileData({
+          name: data.name || "",
+          email: data.email || "",
+          phone: data.phone || "",
+          timezone: data.timezone || "",
+        });
+        //saving the initial state for "cancel" button
+        setOriginalProfileData;
+      } catch (error) {
+        console.error(error);
+        toast({
+          title: "Error",
+          description: "Could not load your profile.",
+          variant: "destructive",
+        });
+      }
+    };
+    fetchProfile();
+  }, []);
 
-  const handleSaveProfile = () => {
-    // In a real app, you would call your API here
-    console.log("Saving profile:", profileData)
-    setIsEditing(false)
-  }
+  const handleEditClick = () => {
+    setOriginalProfileData(profileData);
+    setIsEditing(true);
+  };
 
-  const handleSaveNotifications = () => {
-    // In a real app, you would call your API here
-    console.log("Saving notifications:", notifications)
-  }
+  const handleCancelClick = () => {
+    setProfileData(originalProfileData as any);
+    setIsEditing(false);
+  };
+
+  // const [notifications, setNotifications] = useState({
+  //   emailNotifications: true,
+  //   budgetAlerts: true,
+  //   weeklyReports: false,
+  //   transactionAlerts: true,
+  // });
+
+  const handleSaveProfile = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch("/api/profile", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: profileData.name,
+          phone: profileData.phone,
+          timezone: profileData.timezone,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to save profile.");
+      }
+      if (session?.user?.name !== profileData.name) {
+        await updateSession({ name: profileData.name });
+      }
+
+      toast({
+        title: "Success",
+        description: "Your profile has been updated.",
+      });
+      setIsEditing(false);
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: "Error",
+        description: "Could not save your profile. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // const handleSaveNotifications = () => {
+  //   // In a real app, you would call your API here
+  //   console.log("Saving notifications:", notifications);
+  // };
 
   return (
     <div className="space-y-6">
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-        <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Profile Settings</h1>
-        <p className="text-slate-600 dark:text-slate-300 mt-2">Manage your account settings and preferences</p>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
+          Profile Settings
+        </h1>
+        <p className="text-slate-600 dark:text-slate-300 mt-2">
+          Manage your account settings and preferences
+        </p>
       </motion.div>
 
       <motion.div
@@ -55,8 +143,8 @@ export default function ProfilePage() {
         <Tabs defaultValue="profile" className="space-y-6">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="profile">Profile</TabsTrigger>
-            <TabsTrigger value="notifications">Notifications</TabsTrigger>
-            <TabsTrigger value="security">Security</TabsTrigger>
+            {/* <TabsTrigger value="notifications">Notifications</TabsTrigger> */}
+            {/* <TabsTrigger value="security">Security</TabsTrigger> */}
           </TabsList>
 
           <TabsContent value="profile" className="space-y-6">
@@ -66,26 +154,36 @@ export default function ProfilePage() {
                   <User className="h-5 w-5" />
                   <span>Personal Information</span>
                 </CardTitle>
-                <CardDescription>Update your personal details and profile picture</CardDescription>
+                <CardDescription>
+                  Update your personal details. Email is managed by your sign-in
+                  provider.{" "}
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="flex items-center space-x-6">
                   <div className="relative">
                     <Avatar className="h-24 w-24">
                       <AvatarImage src={session?.user?.image || ""} />
-                      <AvatarFallback className="text-2xl">{session?.user?.name?.charAt(0) || "U"}</AvatarFallback>
+                      <AvatarFallback className="text-2xl">
+                        {session?.user?.name?.charAt(0) || "U"}
+                      </AvatarFallback>
                     </Avatar>
                     <Button
                       size="sm"
                       variant="outline"
                       className="absolute -bottom-2 -right-2 h-8 w-8 rounded-full p-0"
+                      disabled
                     >
                       <Camera className="h-4 w-4" />
                     </Button>
                   </div>
                   <div>
-                    <h3 className="text-lg font-medium">{session?.user?.name}</h3>
-                    <p className="text-slate-600 dark:text-slate-400">{session?.user?.email}</p>
+                    <h3 className="text-lg font-medium">
+                      {session?.user?.name}
+                    </h3>
+                    <p className="text-slate-600 dark:text-slate-400">
+                      {session?.user?.email}
+                    </p>
                   </div>
                 </div>
 
@@ -95,8 +193,10 @@ export default function ProfilePage() {
                     <Input
                       id="name"
                       value={profileData.name}
-                      onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
-                      disabled={!isEditing}
+                      onChange={(e) =>
+                        setProfileData({ ...profileData, name: e.target.value })
+                      }
+                      disabled={!isEditing || isLoading}
                     />
                   </div>
                   <div className="space-y-2">
@@ -105,8 +205,7 @@ export default function ProfilePage() {
                       id="email"
                       type="email"
                       value={profileData.email}
-                      onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
-                      disabled={!isEditing}
+                      disabled
                     />
                   </div>
                   <div className="space-y-2">
@@ -114,8 +213,13 @@ export default function ProfilePage() {
                     <Input
                       id="phone"
                       value={profileData.phone}
-                      onChange={(e) => setProfileData({ ...profileData, phone: e.target.value })}
-                      disabled={!isEditing}
+                      onChange={(e) =>
+                        setProfileData({
+                          ...profileData,
+                          phone: e.target.value,
+                        })
+                      }
+                      disabled={!isEditing || isLoading}
                       placeholder="Enter your phone number"
                     />
                   </div>
@@ -124,8 +228,13 @@ export default function ProfilePage() {
                     <Input
                       id="timezone"
                       value={profileData.timezone}
-                      onChange={(e) => setProfileData({ ...profileData, timezone: e.target.value })}
-                      disabled={!isEditing}
+                      onChange={(e) =>
+                        setProfileData({
+                          ...profileData,
+                          timezone: e.target.value,
+                        })
+                      }
+                      disabled={!isEditing || isLoading}
                     />
                   </div>
                 </div>
@@ -133,27 +242,31 @@ export default function ProfilePage() {
                 <div className="flex space-x-4">
                   {isEditing ? (
                     <>
-                      <Button onClick={handleSaveProfile}>Save Changes</Button>
-                      <Button variant="outline" onClick={() => setIsEditing(false)}>
+                      <Button onClick={handleSaveProfile} disabled={isLoading}>
+                        {isLoading ? "Saving..." : "Save Profile"}
+                      </Button>
+                      <Button variant="outline" onClick={handleCancelClick}>
                         Cancel
                       </Button>
                     </>
                   ) : (
-                    <Button onClick={() => setIsEditing(true)}>Edit Profile</Button>
+                    <Button onClick={handleEditClick}>Edit Profile</Button>
                   )}
                 </div>
               </CardContent>
             </Card>
           </TabsContent>
 
-          <TabsContent value="notifications" className="space-y-6">
+          {/* <TabsContent value="notifications" className="space-y-6">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <Bell className="h-5 w-5" />
                   <span>Notification Preferences</span>
                 </CardTitle>
-                <CardDescription>Choose what notifications you want to receive</CardDescription>
+                <CardDescription>
+                  Choose what notifications you want to receive
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="space-y-4">
@@ -166,7 +279,12 @@ export default function ProfilePage() {
                     </div>
                     <Switch
                       checked={notifications.emailNotifications}
-                      onCheckedChange={(checked) => setNotifications({ ...notifications, emailNotifications: checked })}
+                      onCheckedChange={(checked) =>
+                        setNotifications({
+                          ...notifications,
+                          emailNotifications: checked,
+                        })
+                      }
                     />
                   </div>
 
@@ -179,46 +297,69 @@ export default function ProfilePage() {
                     </div>
                     <Switch
                       checked={notifications.budgetAlerts}
-                      onCheckedChange={(checked) => setNotifications({ ...notifications, budgetAlerts: checked })}
+                      onCheckedChange={(checked) =>
+                        setNotifications({
+                          ...notifications,
+                          budgetAlerts: checked,
+                        })
+                      }
                     />
                   </div>
 
                   <div className="flex items-center justify-between">
                     <div>
                       <h4 className="font-medium">Weekly Reports</h4>
-                      <p className="text-sm text-slate-600 dark:text-slate-400">Receive weekly spending summaries</p>
+                      <p className="text-sm text-slate-600 dark:text-slate-400">
+                        Receive weekly spending summaries
+                      </p>
                     </div>
                     <Switch
                       checked={notifications.weeklyReports}
-                      onCheckedChange={(checked) => setNotifications({ ...notifications, weeklyReports: checked })}
+                      onCheckedChange={(checked) =>
+                        setNotifications({
+                          ...notifications,
+                          weeklyReports: checked,
+                        })
+                      }
                     />
                   </div>
 
                   <div className="flex items-center justify-between">
                     <div>
                       <h4 className="font-medium">Transaction Alerts</h4>
-                      <p className="text-sm text-slate-600 dark:text-slate-400">Get notified for large transactions</p>
+                      <p className="text-sm text-slate-600 dark:text-slate-400">
+                        Get notified for large transactions
+                      </p>
                     </div>
                     <Switch
                       checked={notifications.transactionAlerts}
-                      onCheckedChange={(checked) => setNotifications({ ...notifications, transactionAlerts: checked })}
+                      onCheckedChange={(checked) =>
+                        setNotifications({
+                          ...notifications,
+                          transactionAlerts: checked,
+                        })
+                      }
                     />
                   </div>
                 </div>
 
-                <Button onClick={handleSaveNotifications}>Save Preferences</Button>
+                <Button onClick={handleSaveNotifications}>
+                  Save Preferences
+                </Button>
               </CardContent>
             </Card>
-          </TabsContent>
+          </TabsContent> */}
 
-          <TabsContent value="security" className="space-y-6">
+          {/* <TabsContent value="security" className="space-y-6">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <Shield className="h-5 w-5" />
                   <span>Security Settings</span>
                 </CardTitle>
-                <CardDescription>Manage your account security and privacy</CardDescription>
+                <CardDescription>
+                  Manage your account security and privacy
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="space-y-4">
@@ -231,7 +372,9 @@ export default function ProfilePage() {
                         </div>
                         <div>
                           <p className="font-medium">Google</p>
-                          <p className="text-sm text-slate-600 dark:text-slate-400">Connected via OAuth</p>
+                          <p className="text-sm text-slate-600 dark:text-slate-400">
+                            Connected via OAuth
+                          </p>
                         </div>
                       </div>
                       <Button variant="outline" size="sm">
@@ -251,7 +394,9 @@ export default function ProfilePage() {
                   </div>
 
                   <div className="p-4 border rounded-lg border-red-200 dark:border-red-800">
-                    <h4 className="font-medium mb-2 text-red-600 dark:text-red-400">Danger Zone</h4>
+                    <h4 className="font-medium mb-2 text-red-600 dark:text-red-400">
+                      Danger Zone
+                    </h4>
                     <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">
                       Permanently delete your account and all associated data
                     </p>
@@ -262,9 +407,9 @@ export default function ProfilePage() {
                 </div>
               </CardContent>
             </Card>
-          </TabsContent>
+          </TabsContent> */}
         </Tabs>
       </motion.div>
     </div>
-  )
+  );
 }
