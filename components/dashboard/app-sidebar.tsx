@@ -135,10 +135,10 @@ export function AppSidebar() {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/dashboard/settings">
+                  {/* <Link href="/dashboard/settings">
                     <Settings className="mr-2 h-4 w-4" />
                     Settings
-                  </Link>
+                  </Link> */}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => signOut()}>
                   <LogOut className="mr-2 h-4 w-4" />
