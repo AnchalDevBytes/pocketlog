@@ -113,7 +113,7 @@ const budgetSlice = createSlice({
       })
       .addCase(addBudget.fulfilled, (state, action) => {
         state.loadingAddAndUpdate = false;
-        state.budgets = action.payload;
+        state.budgets.push(action.payload);
       })
       .addCase(addBudget.rejected, (state, action) => {
         state.loadingAddAndUpdate = false;

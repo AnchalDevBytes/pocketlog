@@ -99,8 +99,6 @@ export default function BudgetsPage() {
     );
   }
 
-  console.log(budgets);
-
   return (
     <div className="space-y-6">
       <motion.div
