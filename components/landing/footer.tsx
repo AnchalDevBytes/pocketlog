@@ -5,7 +5,7 @@ export function Footer() {
   return (
     <footer className="bg-slate-900 text-white py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="col-span-1 md:col-span-2">
             <Link href="/" className="flex items-center space-x-2 mb-4">
               <Wallet className="h-8 w-8 text-blue-400" />
@@ -66,36 +66,6 @@ export function Footer() {
                 >
                   Contact
                 </Link>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Legal</h3>
-            <ul className="space-y-2">
-              <li>
-                <a
-                  href="#"
-                  className="text-slate-300 hover:text-white transition-colors"
-                >
-                  Privacy Policy
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-slate-300 hover:text-white transition-colors"
-                >
-                  Terms of Service
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-slate-300 hover:text-white transition-colors"
-                >
-                  Cookie Policy
-                </a>
               </li>
             </ul>
           </div>

@@ -100,9 +100,6 @@ export default function ContactPage() {
                           <p className="text-slate-600 dark:text-slate-300">
                             anchal.js.dev@gmail.com
                           </p>
-                          <p className="text-sm text-slate-500 dark:text-slate-400">
-                            We typically respond within 24 hours
-                          </p>
                         </div>
                       </div>
                     </CardContent>
@@ -122,28 +119,7 @@ export default function ContactPage() {
                             @AnchalDevBytes
                           </p>
                           <p className="text-sm text-slate-500 dark:text-slate-400">
-                            Report bugs or contribute to the project
-                          </p>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardContent className="p-6">
-                      <div className="flex items-center space-x-4">
-                        <div className="bg-blue-100 dark:bg-blue-900 p-3 rounded-lg">
-                          <Twitter className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-                        </div>
-                        <div>
-                          <h3 className="font-semibold text-slate-900 dark:text-white">
-                            Twitter
-                          </h3>
-                          <p className="text-slate-600 dark:text-slate-300">
-                            @AnchalTwt
-                          </p>
-                          <p className="text-sm text-slate-500 dark:text-slate-400">
-                            Follow us for updates and tips
+                            Report bugs and share feedback
                           </p>
                         </div>
                       </div>
@@ -151,19 +127,6 @@ export default function ContactPage() {
                   </Card>
                 </div>
               </div>
-
-              <Card className="bg-gradient-to-r from-blue-500 to-purple-600 text-white border-0">
-                <CardContent className="p-6">
-                  <h3 className="text-xl font-semibold mb-2">
-                    Need Immediate Help?
-                  </h3>
-                  <p className="mb-4 text-blue-100">
-                    Check out our comprehensive documentation and FAQ section
-                    for quick answers to common questions.
-                  </p>
-                  <Button variant="secondary">View Documentation</Button>
-                </CardContent>
-              </Card>
             </div>
           </div>
         </div>

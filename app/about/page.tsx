@@ -3,134 +3,106 @@
 import { Header } from "@/components/landing/header";
 import { Footer } from "@/components/landing/footer";
 import { ParticleBackground } from "@/components/ui/particle-background";
-import { Card, CardContent } from "@/components/ui/card";
-import { BarChart3, Shield, Users, Zap } from "lucide-react";
+import {
+  BarChart3,
+  Shield,
+  Zap,
+  LayoutGrid,
+  TrendingUp,
+  Receipt,
+} from "lucide-react";
 
 export default function AboutPage() {
   const features = [
     {
+      icon: Receipt,
+      title: "Track Transactions",
+      description:
+        "Effortlessly log all your income and expenses. Categorize every transaction to see where your money goes.",
+    },
+    {
+      icon: TrendingUp,
+      title: "Create Budgets",
+      description:
+        "Set monthly or weekly spending targets for different categories to stay on top of your financial goals.",
+    },
+    {
       icon: BarChart3,
-      title: "Smart Analytics",
+      title: "Visualize Your Finances",
       description:
-        "Advanced charts and insights to help you understand your spending patterns and make better financial decisions.",
+        "Interactive charts and a dashboard overview provide a clear picture of your financial health at a glance.",
     },
     {
-      icon: Shield,
-      title: "Bank-Level Security",
+      icon: LayoutGrid,
+      title: "Organize with Categories",
       description:
-        "Your financial data is protected with industry-standard encryption and security measures.",
-    },
-    {
-      icon: Users,
-      title: "User-Centric Design",
-      description:
-        "Built with user experience in mind, making financial management accessible and enjoyable.",
+        "Create custom categories for both income and expenses to organize your financial life your way.",
     },
     {
       icon: Zap,
-      title: "Real-Time Updates",
+      title: "Fast & Intuitive",
       description:
-        "Instant synchronization across all your devices with real-time transaction updates.",
+        "A clean, modern interface designed to make financial management quick, easy, and even enjoyable.",
+    },
+    {
+      icon: Shield,
+      title: "Secure & Private",
+      description:
+        "Your data is yours. We use strong security measures and respect your privacy.",
     },
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-900">
+    <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-slate-900">
       <ParticleBackground />
       <Header />
 
-      <main className="pt-24 pb-16">
+      <main className="flex-grow pt-24 pb-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 dark:text-white mb-6">
-              About PocketLog
+            <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 dark:text-white mb-4">
+              Your Personal Finance Hub
             </h1>
             <p className="text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto">
-              We're on a mission to make personal finance management simple,
-              intuitive, and accessible to everyone.
+              PocketLog is a modern, intuitive tool designed to help you
+              effortlessly track your spending, manage budgets, and achieve your
+              financial goals.
             </p>
           </div>
 
-          <div className="space-y-16">
-            <section>
-              <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-8 text-center">
-                Our Story
-              </h2>
-              <div className="prose prose-lg max-w-none text-slate-600 dark:text-slate-300">
-                <p className="text-lg leading-relaxed mb-6">
-                  PocketLog was born from a simple frustration: existing
-                  financial tools were either too complex for everyday users or
-                  too basic to provide meaningful insights. We believed there
-                  had to be a better way to help people take control of their
-                  finances.
-                </p>
-                <p className="text-lg leading-relaxed mb-6">
-                  Our team of developers, designers, and financial experts came
-                  together to create a platform that combines powerful analytics
-                  with an intuitive interface. We've spent countless hours
-                  researching user behavior, testing features, and refining the
-                  experience to create something truly special.
-                </p>
-                <p className="text-lg leading-relaxed">
-                  Today, PocketLog helps thousands of users worldwide make
-                  smarter financial decisions, reach their savings goals, and
-                  build better money habits. We're just getting started.
-                </p>
-              </div>
-            </section>
+          <div className="bg-white dark:bg-slate-800/50 rounded-2xl p-8 md:p-12 shadow-xl border border-slate-200 dark:border-slate-700">
+            <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-8 text-center">
+              Core Features
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {features.map((feature, index) => (
+                <div
+                  key={index}
+                  className="flex flex-col items-center text-center"
+                >
+                  <div className="bg-blue-100 dark:bg-blue-900/50 p-4 rounded-full mb-4">
+                    <feature.icon className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">
+                    {feature.title}
+                  </h3>
+                  <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    {feature.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
 
-            <section>
-              <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-8 text-center">
-                What Makes Us Different
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {features.map((feature, index) => (
-                  <Card key={index} className="border-0 shadow-lg">
-                    <CardContent className="p-8">
-                      <div className="flex items-center space-x-4 mb-4">
-                        <div className="bg-blue-100 dark:bg-blue-900 p-3 rounded-lg">
-                          <feature.icon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-                        </div>
-                        <h3 className="text-xl font-semibold text-slate-900 dark:text-white">
-                          {feature.title}
-                        </h3>
-                      </div>
-                      <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-                        {feature.description}
-                      </p>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </section>
-
-            <section className="bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg">
-              <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-8 text-center">
-                Our Mission
-              </h2>
-              <div className="text-center">
-                <p className="text-xl text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl mx-auto">
-                  To democratize financial literacy and empower individuals to
-                  make informed decisions about their money. We believe that
-                  everyone deserves access to powerful financial tools,
-                  regardless of their background or experience level.
-                </p>
-              </div>
-            </section>
-
-            <section>
-              <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-8 text-center">
-                Privacy & Security
-              </h2>
-              <div className="bg-slate-100 dark:bg-slate-800 rounded-2xl p-8">
-                <p className="text-lg text-slate-600 dark:text-slate-300 leading-relaxed text-center">
-                  Your financial data is precious, and we treat it that way. We
-                  use bank-level encryption, never sell your data to third
-                  parties, and give you complete control over your information.
-                  Your trust is our most valuable asset.
-                </p>
-              </div>
-            </section>
+          <div className="text-center mt-16">
+            <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">
+              Our Commitment
+            </h2>
+            <p className="text-lg text-slate-600 dark:text-slate-300 max-w-3xl mx-auto">
+              We believe in simplicity, security, and giving you complete
+              control over your financial data. PocketLog is built to empower
+              you, not to get in your way.
+            </p>
           </div>
         </div>
       </main>
