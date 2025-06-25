@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import { ArrowRight, BarChart3, PieChart, TrendingUp } from "lucide-react"
-import Link from "next/link"
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { ArrowRight, BarChart3, PieChart, TrendingUp } from "lucide-react";
+import Link from "next/link";
 
 export function HeroSection() {
   return (
@@ -23,8 +23,8 @@ export function HeroSection() {
               </span>
             </h1>
             <p className="text-xl sm:text-2xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto mb-8">
-              Track expenses, manage budgets, and gain insights into your financial habits with our intelligent expense
-              tracking platform.
+              Track expenses, manage budgets, and gain insights into your
+              financial habits with our intelligent expense tracking platform.
             </p>
           </motion.div>
 
@@ -93,21 +93,44 @@ export function HeroSection() {
                   </div>
                 </div>
                 <div className="bg-slate-50 dark:bg-slate-700 rounded-xl p-6">
-                  <h3 className="text-lg font-semibold mb-4 text-slate-900 dark:text-white">Recent Transactions</h3>
+                  <h3 className="text-lg font-semibold mb-4 text-slate-900 dark:text-white">
+                    Recent Transactions
+                  </h3>
                   <div className="space-y-3">
                     {[
-                      { name: "Grocery Shopping", amount: "-$85.50", category: "Food" },
-                      { name: "Salary Deposit", amount: "+$2,600.00", category: "Income" },
-                      { name: "Electric Bill", amount: "-$120.00", category: "Utilities" },
+                      {
+                        name: "Grocery Shopping",
+                        amount: "-$85.50",
+                        category: "Food",
+                      },
+                      {
+                        name: "Salary Deposit",
+                        amount: "+$2,600.00",
+                        category: "Income",
+                      },
+                      {
+                        name: "Electric Bill",
+                        amount: "-$120.00",
+                        category: "Utilities",
+                      },
                     ].map((transaction, index) => (
-                      <div key={index} className="flex items-center justify-between">
+                      <div
+                        key={index}
+                        className="flex items-start md:items-center justify-between"
+                      >
                         <div>
-                          <p className="font-medium text-slate-900 dark:text-white">{transaction.name}</p>
-                          <p className="text-sm text-slate-500 dark:text-slate-400">{transaction.category}</p>
+                          <p className="font-medium text-start text-slate-900 dark:text-white">
+                            {transaction.name}
+                          </p>
+                          <p className="text-sm text-slate-500 text-start dark:text-slate-400">
+                            {transaction.category}
+                          </p>
                         </div>
                         <p
                           className={`font-semibold ${
-                            transaction.amount.startsWith("+") ? "text-green-600" : "text-red-600"
+                            transaction.amount.startsWith("+")
+                              ? "text-green-600"
+                              : "text-red-600"
                           }`}
                         >
                           {transaction.amount}
@@ -122,5 +145,5 @@ export function HeroSection() {
         </div>
       </div>
     </section>
-  )
+  );
 }

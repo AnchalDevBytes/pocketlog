@@ -95,7 +95,7 @@ export function TransactionList({
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-2">
                   <div className="text-right">
                     <p
                       className={`font-semibold text-lg ${
@@ -109,7 +109,7 @@ export function TransactionList({
                     </p>
                   </div>
 
-                  <div className="flex items-center space-x-2">
+                  <div className="flex flex-col md:flex-row items-end md:items-center space-x-2">
                     <Button
                       variant="ghost"
                       size="sm"

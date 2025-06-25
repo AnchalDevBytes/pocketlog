@@ -1,24 +1,28 @@
-"use client"
+"use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
-import { Badge } from "@/components/ui/badge"
-import type { Budget } from "@/lib/features/budgetSlice"
-import { motion } from "framer-motion"
-import { formatCurrency } from "@/lib/utils"
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Plus } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
+import type { Budget } from "@/lib/features/budgetSlice";
+import { motion } from "framer-motion";
+import { formatCurrency } from "@/lib/utils";
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 
 interface BudgetProgressProps {
-  budgets: Budget[]
+  budgets: Budget[];
 }
 
 export function BudgetProgress({ budgets }: BudgetProgressProps) {
   if (budgets.length === 0) {
     return (
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
         <Card>
           <CardHeader>
             <CardTitle>Budget Progress</CardTitle>
@@ -26,7 +30,8 @@ export function BudgetProgress({ budgets }: BudgetProgressProps) {
           <CardContent>
             <div className="text-center py-8">
               <p className="text-slate-500 dark:text-slate-400 mb-4">
-                No budgets set yet. Create your first budget to track your spending goals!
+                No budgets set yet. Create your first budget to track your
+                spending goals!
               </p>
               <Link href="/dashboard/budgets">
                 <Button>
@@ -38,15 +43,15 @@ export function BudgetProgress({ budgets }: BudgetProgressProps) {
           </CardContent>
         </Card>
       </motion.div>
-    )
+    );
   }
 
   const activeBudgets = budgets.filter((budget) => {
-    const now = new Date()
-    const startDate = new Date(budget.startDate)
-    const endDate = new Date(budget.endDate)
-    return now >= startDate && now <= endDate
-  })
+    const now = new Date();
+    const startDate = new Date(budget.startDate);
+    const endDate = new Date(budget.endDate);
+    return now >= startDate && now <= endDate;
+  });
 
   const pieData = activeBudgets.map((budget, index) => ({
     name: budget.name,
@@ -54,10 +59,14 @@ export function BudgetProgress({ budgets }: BudgetProgressProps) {
     remaining: budget.amount - budget.spent,
     total: budget.amount,
     color: `hsl(${(index * 137.5) % 360}, 70%, 50%)`,
-  }))
+  }));
 
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+    >
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>Budget Progress</CardTitle>
@@ -70,7 +79,9 @@ export function BudgetProgress({ budgets }: BudgetProgressProps) {
         <CardContent>
           {activeBudgets.length === 0 ? (
             <div className="text-center py-4">
-              <p className="text-slate-500 dark:text-slate-400">No active budgets for this period</p>
+              <p className="text-slate-500 dark:text-slate-400">
+                No active budgets for this period
+              </p>
             </div>
           ) : (
             <div className="space-y-6">
@@ -90,15 +101,20 @@ export function BudgetProgress({ budgets }: BudgetProgressProps) {
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                     </Pie>
-                    <Tooltip formatter={(value, name) => [formatCurrency(Number(value)), name]} />
+                    <Tooltip
+                      formatter={(value, name) => [
+                        formatCurrency(Number(value)),
+                        name,
+                      ]}
+                    />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
 
               <div className="space-y-4">
                 {activeBudgets.map((budget, index) => {
-                  const progress = (budget.spent / budget.amount) * 100
-                  const isOverBudget = budget.spent > budget.amount
+                  const progress = (budget.spent / budget.amount) * 100;
+                  const isOverBudget = budget.spent > budget.amount;
 
                   return (
                     <motion.div
@@ -109,27 +125,39 @@ export function BudgetProgress({ budgets }: BudgetProgressProps) {
                       className="space-y-2"
                     >
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-2">
-                          <h4 className="font-medium">{budget.name}</h4>
-                          <Badge variant={isOverBudget ? "destructive" : "secondary"}>
+                        <div className="flex items-center space-x-4">
+                          <h4 className="text-sm md:text-base font-medium">
+                            {budget.name}
+                          </h4>
+                          <Badge
+                            variant={isOverBudget ? "destructive" : "secondary"}
+                          >
                             {budget.period.toLowerCase()}
                           </Badge>
                         </div>
                         <div className="text-sm text-slate-600 dark:text-slate-400">
-                          {formatCurrency(budget.spent)} / {formatCurrency(budget.amount)}
+                          {formatCurrency(budget.spent)} /{" "}
+                          {formatCurrency(budget.amount)}
                         </div>
                       </div>
-                      <Progress value={Math.min(progress, 100)} className={`h-2 ${isOverBudget ? "bg-red-100" : ""}`} />
+                      <Progress
+                        value={Math.min(progress, 100)}
+                        className={`h-2 ${isOverBudget ? "bg-red-100" : ""}`}
+                      />
                       <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400">
                         <span>{progress.toFixed(1)}% used</span>
                         <span>
                           {isOverBudget
-                            ? `${formatCurrency(budget.spent - budget.amount)} over budget`
-                            : `${formatCurrency(budget.amount - budget.spent)} remaining`}
+                            ? `${formatCurrency(
+                                budget.spent - budget.amount
+                              )} over budget`
+                            : `${formatCurrency(
+                                budget.amount - budget.spent
+                              )} remaining`}
                         </span>
                       </div>
                     </motion.div>
-                  )
+                  );
                 })}
               </div>
             </div>
@@ -137,5 +165,5 @@ export function BudgetProgress({ budgets }: BudgetProgressProps) {
         </CardContent>
       </Card>
     </motion.div>
-  )
+  );
 }
