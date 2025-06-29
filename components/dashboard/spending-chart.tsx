@@ -106,7 +106,7 @@ export function SpendingChart({ transactions }: SpendingChartProps) {
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="day" />
               <YAxis />
-              <Tooltip formatter={(value) => [`$${value}`, "Spent"]} />
+              <Tooltip formatter={(value) => [`₹${value}`, "Spent"]} />
               <Bar dataKey="amount" fill="#3b82f6" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>

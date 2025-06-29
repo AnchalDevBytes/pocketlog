@@ -142,7 +142,7 @@ export function AccountCard({
             </div>
 
             {recentTransactions.length === 0 ? (
-              <p className="text-xs text-slate-500 dark:text-slate-400 max-h-[84px] min-h-[84px]">
+              <p className="text-xs text-slate-500 dark:text-slate-400 max-h-[85px] min-h-[85px]">
                 No recent transactions
               </p>
             ) : (
