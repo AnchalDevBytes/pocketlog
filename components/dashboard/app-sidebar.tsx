@@ -80,10 +80,10 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader>
-        <div className="flex items-center space-x-2 px-4 py-2">
+        <Link href="/" className="flex items-center space-x-2 px-4 py-2">
           <Wallet className="h-8 w-8 text-blue-600" />
           <span className="text-xl font-bold">PocketLog</span>
-        </div>
+        </Link>
       </SidebarHeader>
 
       <SidebarContent>
