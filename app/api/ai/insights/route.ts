@@ -55,7 +55,6 @@ export async function POST(request: NextRequest) {
     const budgetSummary = budgets.map((b) => ({
       name: b.name,
       amount: b.amount,
-      spent: b.spent,
       period: b.period,
     }));
 
@@ -99,7 +98,6 @@ export async function POST(request: NextRequest) {
     try {
       insights = JSON.parse(text);
     } catch (error) {
-      // If JSON parsing fails, return a structured response
       insights = {
         spendingPatterns: "Unable to analyze spending patterns at this time.",
         budgetInsights: "Budget analysis unavailable.",
