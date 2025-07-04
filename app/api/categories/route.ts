@@ -21,6 +21,13 @@ export async function GET(request: NextRequest) {
 
     const categories = await prisma.category.findMany({
       where: { userId: user.id },
+      include: {
+        budget: {
+          select: {
+            endDate: true,
+          },
+        },
+      },
       orderBy: { name: "asc" },
     });
 

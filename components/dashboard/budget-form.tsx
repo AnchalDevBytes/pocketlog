@@ -50,6 +50,7 @@ const getDefaultFormData = () => {
     period: "MONTHLY" as "WEEKLY" | "MONTHLY" | "YEARLY",
     startDate: today,
     endDate: calculateEndDate(today, "MONTHLY"),
+    categoryIds: [],
   };
 };
 
@@ -74,6 +75,31 @@ export function BudgetForm({
   });
 
   const isEditMode = !!initialData;
+
+  const expenseCategories = categories.filter((cat) => cat.type === "EXPENSE");
+  const selectedCategories = formData.categoryIds.map((id) =>
+    categories.find((cat) => cat.id === id)
+  );
+
+  // Filter out categories that are already assigned to another budget
+  const availableCategories = expenseCategories.filter((cat) => {
+    // 1. It's not assigned to any budget.
+    // @ts-ignore - budgetId is on the category from the API now.
+    if (!cat.budgetId) return true;
+
+    // 2. It's assigned to the budget we are currently editing.
+    // @ts-ignore
+    if (isEditMode && cat.budgetId === initialData?.id) return true;
+
+    // 3. It's assigned to a budget, but that budget has already expired.
+    // @ts-ignore
+    if (cat.budget && new Date(cat.budget.endDate) < new Date()) {
+      return true;
+    }
+
+    // It's assigned to the budget we are currently editing
+    return false; // It's assigned to some other budget
+  });
 
   const handlePeriodChange = (period: "WEEKLY" | "MONTHLY" | "YEARLY") => {
     const endDate = calculateEndDate(formData.startDate, period);
@@ -115,20 +141,6 @@ export function BudgetForm({
     }
     onSubmit(formData);
   };
-
-  const expenseCategories = categories.filter((cat) => cat.type === "EXPENSE");
-  const selectedCategories = formData.categoryIds.map((id) =>
-    categories.find((cat) => cat.id === id)
-  );
-
-  // Filter out categories that are already assigned to another budget
-  const availableCategories = expenseCategories.filter((cat) => {
-    // @ts-ignore - budgetId is on the category from the schema
-    if (!cat.budgetId) return true; // It's unassigned
-    // @ts-ignore
-    if (isEditMode && cat.budgetId === initialData?.id) return true; // It's assigned to the budget we are currently editing
-    return false; // It's assigned to some other budget
-  });
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
