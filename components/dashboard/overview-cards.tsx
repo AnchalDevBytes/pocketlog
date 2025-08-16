@@ -6,6 +6,7 @@ import { formatCurrency } from "@/lib/utils";
 import { motion } from "framer-motion";
 import type { Transaction } from "@/lib/features/transactionSlice";
 import type { BankAccount } from "@/lib/features/accountSlice";
+import { FollowerPointerCard } from "../ui/following-pointer";
 
 interface OverviewCardsProps {
   transactions: Transaction[];
@@ -83,21 +84,23 @@ export function OverviewCards({ transactions, accounts }: OverviewCardsProps) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: index * 0.1 }}
         >
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                {card.title}
-              </CardTitle>
-              <div className={`p-2 rounded-lg ${card.bgColor}`}>
-                <card.icon className={`h-4 w-4 ${card.color}`} />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className={`text-2xl font-bold ${card.color}`}>
-                {formatCurrency(card.value)}
-              </div>
-            </CardContent>
-          </Card>
+          <FollowerPointerCard title={card.title}>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  {card.title}
+                </CardTitle>
+                <div className={`p-2 rounded-lg ${card.bgColor}`}>
+                  <card.icon className={`h-4 w-4 ${card.color}`} />
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className={`text-2xl font-bold ${card.color}`}>
+                  {formatCurrency(card.value)}
+                </div>
+              </CardContent>
+            </Card>
+          </FollowerPointerCard>
         </motion.div>
       ))}
     </div>
