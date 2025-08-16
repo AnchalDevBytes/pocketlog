@@ -5,7 +5,6 @@
 ## Table of Contents
 
 - [Introduction](#introduction)
-- [Live Demo](#live-demo)
 - [Core Features](#core-features)
 - [Tech Stack](#tech-stack)
 - [Getting Started](#getting-started)
@@ -17,10 +16,6 @@
 ## Introduction
 
 PocketLog addresses the common challenge of personal finance management by offering a clean, user-friendly interface without sacrificing powerful features. Users can authenticate securely, manage multiple bank accounts, categorize every transaction, and set intelligent budgets that track spending in real-time. The application is fully responsive and provides a seamless experience on both desktop and mobile devices.
-
-## Live Demo
-
-[Link to your deployed application](https://ai-pocketlog.vercel.app/)
 
 ## Core Features
 
