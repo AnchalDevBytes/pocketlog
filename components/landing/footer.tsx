@@ -73,7 +73,7 @@ export function Footer() {
 
         <div className="border-t border-slate-700 mt-8 pt-8 text-center">
           <p className="text-slate-400">
-            © 2024 PocketLog. All rights reserved.
+            © {new Date().getFullYear()} PocketLog. All rights reserved.
           </p>
         </div>
       </div>
